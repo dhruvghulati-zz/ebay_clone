@@ -1,8 +1,19 @@
 -- Created by Vertabelo (http://vertabelo.com)
 -- Last modification date: 2016-02-05 23:09:08.594
 
+-- Change root password
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('DatabaseMasters');
 
+-- Delete previous copy of DB
+DROP DATABASE IF EXISTS ebay_clone;
 
+-- Create new DB
+CREATE DATABASE ebay_clone
+    DEFAULT CHARACTER SET utf8
+    DEFAULT COLLATE utf8_general_ci;
+
+-- Use DB
+USE ebay_clone;
 
 -- tables
 -- Table Auction
@@ -50,7 +61,7 @@ CREATE TABLE Roles (
 
 -- Table Users
 CREATE TABLE Users (
-    user_id int  NOT NULL,
+    user_id int  NOT NULL AUTO_INCREMENT,
     username varchar(31)  NOT NULL,
     password varchar(31)  NOT NULL,
     profile_picture varchar(255)  NOT NULL,
