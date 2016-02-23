@@ -14,7 +14,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-     <link href="css/datepicker.css" rel="stylesheet">
+    <link href="css/datepicker.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -79,19 +79,54 @@
 
     <form class="form-horizontal" style="padding-top:50px">
         <fieldset style="padding-top:50px">
-            <!-- Text input-->
+            <!-- Name -->
             <div class="form-group">
                 <label class="col-md-4 control-label" for="product_name">Product Name</label>
                 <div class="col-md-4">
-                    <input id="product_name" name="product_name" placeholder="Product Name" class="form-control input-md" required="" type="text">
-
+                    <input id="product_name" name="product_name" placeholder="Product Name" class="form-control" required>
                 </div>
             </div>
-            <!-- Select Basic -->
+            <!-- Category -->
             <div class="form-group">
                 <label class="col-md-4 control-label" for="product_category">Product Category</label>
                 <div class="col-md-4">
-                    <select id="product_category" name="product_category" class="form-control">
+                    <select id="product_category" name="product_category" class="form-control" required>
+                        <option value="" selected disabled hidden>Please Select a Category</option>
+                        <option>Antiques</option>
+                        <option>Art</option>
+                        <option>Baby</option>
+                        <option>Books, Comics & Magazines</option>
+                        <option>Business, Office & Industrial</option>
+                        <option>Cameras & Photography</option>
+                        <option>Cars, Motorcycles & Vehicles</option>
+                        <option>Clothes, Shoes & Accessories</option>
+                        <option>Coins</option>
+                        <option>Collectables</option>
+                        <option>Computers/Tablets & Networking</option>
+                        <option>Crafts</option>
+                        <option>Dolls & Bears</option>
+                        <option>DVDs, Films & TV</option>
+                        <option>Events Tickets</option>
+                        <option>Garden & Patio</option>
+                        <option>Health & Beauty</option>
+                        <option>Holidays & Travel</option>
+                        <option>Home, Furniture & DIY</option>
+                        <option>Jewellery & Watches</option>
+                        <option>Mobile Phones & Communication</option>
+                        <option>Music</option>
+                        <option>Musical Instruments</option>
+                        <option>Pet Supplies</option>
+                        <option>Pottery, Porcelain & Glass</option>
+                        <option>Property</option>
+                        <option>Sound & Vision</option>
+                        <option>Sporting Goods</option>
+                        <option>Sports Memorabilia</option>
+                        <option>Stamps</option>
+                        <option>Toys & Games</option>
+                        <option>Vehicle Parts & Accessories</option>
+                        <option>Video Games & Consoles</option>
+                        <option>Wholesale & Job Lots</option>
+                        <option>Everything Else</option>
                     </select>
                 </div>
             </div>
@@ -99,46 +134,45 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="product_description">Product Description</label>
                 <div class="col-md-4">
-                    <textarea class="form-control" id="product_description" name="product_description"></textarea>
+                    <textarea class="form-control" id="product_description" name="product_description" style="resize: none" required></textarea>
                 </div>
             </div>
             <!-- Textarea -->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="product_description">Product Features</label>
+                <label class="col-md-4 control-label" for="product_features">Product Features</label>
                 <div class="col-md-4">
-                    <textarea class="form-control" id="product_features" name="product_features"></textarea>
+                    <textarea class="form-control" id="product_features" name="product_features" style="resize: none" required></textarea>
                 </div>
             </div>
             <!-- Text input-->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="stock_alert">State</label>
+                <label class="col-md-4 control-label" for="state">State</label>
                 <div class="col-md-4">
-                    <input id="stock_alert" name="stock_alert" placeholder="State" class="form-control input-md" required="" type="text">
-
+                    <input id="state" name="state" placeholder="State" class="form-control" required>
                 </div>
             </div>
             <!-- Text input-->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="approved_by">Start Price</label>
+                <label class="col-md-4 control-label" for="start_price">Start Price</label>
                 <div class="col-md-4">
-                    <input id="" name="approved_by" placeholder="Start Price" class="form-control input-md" required="" type="text">
-                </div>
-            </div>
-
-            <!-- Text input-->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="approved_by">Reserve Price</label>
-                <div class="col-md-4">
-                    <input id="approved_by" name="approved_by" placeholder="Reserve Price" class="form-control input-md" required="" type="text">
+                    <input id="start_price" name="start_price" placeholder="Start Price" class="form-control" required>
                 </div>
             </div>
 
             <!-- Text input-->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="approuved_by">End Date</label>
+                <label class="col-md-4 control-label" for="reserve_price">Reserve Price</label>
+                <div class="col-md-4">
+                    <input id="reserve_price" name="reserve_price" placeholder="Reserve Price" class="form-control" required>
+                </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+                <label class="col-md-4 control-label" for="end_date">End Date</label>
                 <div class="container">
                     <div class="col-md-4">
-                        <input type="text" placeholder="click to show datepicker" id="example1">
+                        <input id="end_date" name="end_date" placeholder="Click to Select Date" required>
                     </div>
                 </div>
                 <!-- Load jQuery and bootstrap datepicker scripts -->
@@ -155,26 +189,27 @@
                     });
                 </script>
             </div>
+
             <!-- Text input-->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="approuved_by">End Time</label>
+                <label class="col-md-4 control-label" for="end_time">End Time</label>
                 <div class="col-md-4">
-                    <input id="approuved_by" name="approuved_by" placeholder="End Time" class="form-control input-md" required="" type="text">
+                    <input id="end_time" name="end_time" placeholder="End Time" class="form-control" required>
                 </div>
             </div>
 
             <!-- File Button -->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="filebutton">Upload Image</label>
+                <label class="col-md-4 control-label" for="upload_image">Upload Image</label>
                 <div class="col-md-4">
-                    <input id="filebutton" name="filebutton" class="input-file" type="file">
+                    <input id="upload_image" name="upload_image" class="input-file" type="file">
                 </div>
             </div>
             <!-- Button -->
             <div class="form-group">
-                <label class="col-md-4 control-label" for="singlebutton">Ready to Upload?</label>
+                <label class="col-md-4 control-label" for="submit_auction">Ready to Submit?</label>
                 <div class="col-md-4">
-                    <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit to Listings</button>
+                    <button id="submit_auction" name="submit_auction" class="btn btn-primary">Submit to Listings</button>
                 </div>
             </div>
 
