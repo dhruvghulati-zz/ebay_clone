@@ -1,21 +1,33 @@
 -- Created by Vertabelo (http://vertabelo.com)
 -- Last modification date: 2016-02-05 23:09:08.594
 
--- Change root password
-SET PASSWORD FOR 'root'@'localhost' = PASSWORD('DatabaseMasters');
 
--- Delete previous copy of DB
+-- Change root password
+UPDATE mysql.user SET Password = PASSWORD('DatabaseMasters') WHERE User = 'root';
+
+
+-- Delete previous copies of DB
+DROP DATABASE IF EXISTS scotchbox;
 DROP DATABASE IF EXISTS ebay_clone;
+
 
 -- Create new DB
 CREATE DATABASE ebay_clone
     DEFAULT CHARACTER SET utf8
     DEFAULT COLLATE utf8_general_ci;
 
+GRANT SELECT, UPDATE, INSERT, DELETE
+    ON ebay_clone.*
+    TO 'websiteManager'@'localhost'
+    IDENTIFIED BY 'websitePassword';
+
+
 -- Use DB
 USE ebay_clone;
 
--- tables
+
+-- Tables
+
 -- Table Auction
 CREATE TABLE Auction (
     auction_id int  NOT NULL,
@@ -75,32 +87,27 @@ CREATE TABLE Users (
 );
 
 
+-- Foreign keys
 
-
-
--- foreign keys
 -- Reference:  Auction_Bids (table: Bids)
-
 ALTER TABLE Bids ADD CONSTRAINT Auction_Bids FOREIGN KEY Auction_Bids (auction_id)
     REFERENCES Auction (auction_id);
--- Reference:  Auction_Item (table: Auction)
 
+-- Reference:  Auction_Item (table: Auction)
 ALTER TABLE Auction ADD CONSTRAINT Auction_Item FOREIGN KEY Auction_Item (item_id)
     REFERENCES Item (item_id);
--- Reference:  Auction_Users (table: Auction)
 
+-- Reference:  Auction_Users (table: Auction)
 ALTER TABLE Auction ADD CONSTRAINT Auction_Users FOREIGN KEY Auction_Users (user_id)
     REFERENCES Users (user_id);
--- Reference:  Users_Bids (table: Bids)
 
+-- Reference:  Users_Bids (table: Bids)
 ALTER TABLE Bids ADD CONSTRAINT Users_Bids FOREIGN KEY Users_Bids (user_id)
     REFERENCES Users (user_id);
--- Reference:  Users_Roles (table: Users)
 
+-- Reference:  Users_Roles (table: Users)
 ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
     REFERENCES Roles (role_id);
 
 
-
 -- End of file.
-
