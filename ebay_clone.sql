@@ -58,7 +58,7 @@ CREATE TABLE Item (
   item_picture VARCHAR(255) NOT NULL,
   name         VARCHAR(127) NOT NULL,
   features     VARCHAR(255) NOT NULL,
-  state        VARCHAR(63)  NOT NULL,
+  item_category        VARCHAR(63)  NOT NULL,
   category_id  INT          NOT NULL,
   CONSTRAINT Item_pk PRIMARY KEY (item_id)
 );
