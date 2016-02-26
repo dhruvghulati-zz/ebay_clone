@@ -28,8 +28,8 @@ CREATE TABLE Auction (
   reserve_price DECIMAL(8, 2) NOT NULL,
   end_price     DECIMAL(8, 2) NOT NULL,
   current_bid   DECIMAL(8, 2) NOT NULL,
-  start_time    TIME          NOT NULL,
-  end_time      TIME          NOT NULL,
+  start_time    DATETIME          NOT NULL,
+  end_time      DATETIME          NOT NULL,
   viewings      INT           NOT NULL,
   item_id       INT           NOT NULL,
   user_id       INT           NOT NULL,
@@ -137,5 +137,15 @@ INSERT INTO Category (item_category) VALUES ('Antiques'), ('Art'), ('Baby'), ('B
   ('Vehicle Parts & Accessories'), ('Video Games & Consoles'), ('Wholesale & Job Lots'), ('Everything Else');
   
 INSERT INTO State (state) VALUES ('Brand New'), ('Like New'), ('Very Good'), ('Good'), ('Acceptable');
+
+-- Sample Data: Test User
+INSERT INTO `Users`(`username`, `password`, `first_name`, `last_name`, `email`, `birthdate`, `rating`, `role_id`) VALUES ('test','1234','test','user','test@test.com','1978-11-11',5,1);
+
+-- Sample Data: Test Items
+INSERT INTO `Item`(`name`, `features`, `item_category`, `state`, `category_id`, `state_id`) VALUES ('Hard Drive','Big Capacity','Computers/Tablets & Networking','Like New',11,2);
+INSERT INTO `Item`(`name`, `features`, `item_category`, `state`, `category_id`, `state_id`) VALUES ('Bouncy Ball','Really Bouncy','Crafts','Brand New',12,1);
+INSERT INTO `Item`(`name`, `features`, `item_category`, `state`, `category_id`, `state_id`) VALUES ('Fiat Leon','Really Fast','Cars, Motorcycles & Vehicles','Acceptable',7,5);
+
+-- Sample Data: Test Auctions
 
 -- End of file.
