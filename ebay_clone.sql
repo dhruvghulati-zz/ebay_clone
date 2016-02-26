@@ -48,8 +48,15 @@ CREATE TABLE Bids (
 -- Table Category
 CREATE TABLE Category (
   category_id INT         NOT NULL  AUTO_INCREMENT,
-  category    VARCHAR(63) NOT NULL,
+  item_category    VARCHAR(63) NOT NULL,
   CONSTRAINT Category_pk PRIMARY KEY (category_id)
+);
+
+-- Table States
+CREATE TABLE State (
+  state_id INT         NOT NULL  AUTO_INCREMENT,
+  state    VARCHAR(63) NOT NULL,
+  CONSTRAINT State_pk PRIMARY KEY (state_id)
 );
 
 -- Table Item
@@ -59,7 +66,9 @@ CREATE TABLE Item (
   name         VARCHAR(127) NOT NULL,
   features     VARCHAR(255) NOT NULL,
   item_category        VARCHAR(63)  NOT NULL,
+    state        VARCHAR(63)  NOT NULL,
   category_id  INT          NOT NULL,
+    state_id INT NOT NULL,
   CONSTRAINT Item_pk PRIMARY KEY (item_id)
 );
 
@@ -102,11 +111,15 @@ ALTER TABLE Auction ADD CONSTRAINT Auction_Users FOREIGN KEY Auction_Users (user
 -- Reference:  Category_Item (table: Item)
 ALTER TABLE Item ADD CONSTRAINT Category_Item FOREIGN KEY Category_Item (category_id)
   REFERENCES Category (category_id);
+  
+-- Reference:  State_Item (table: Item)
+ALTER TABLE Item ADD CONSTRAINT State_Item FOREIGN KEY State_Item (state_id)
+  REFERENCES State (state_id);
 
 -- Reference:  Users_Bids (table: Bids)
 ALTER TABLE Bids ADD CONSTRAINT Users_Bids FOREIGN KEY Users_Bids (user_id)
   REFERENCES Users (user_id);
-
+  
 -- Reference:  Users_Roles (table: Users)
 ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
   REFERENCES Roles (role_id);
@@ -114,7 +127,7 @@ ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
 -- Insert Data
 
 INSERT INTO Roles (role) VALUES ('Buyer'), ('Seller');
-INSERT INTO Category (category) VALUES ('Antiques'), ('Art'), ('Baby'), ('Books, Comics & Magazines'),
+INSERT INTO Category (item_category) VALUES ('Antiques'), ('Art'), ('Baby'), ('Books, Comics & Magazines'),
   ('Business, Office & Industrial'), ('Cameras & Photography'), ('Cars, Motorcycles & Vehicles'),
   ('Clothes, Shoes & Accessories'), ('Coins'), ('Collectables'), ('Computers/Tablets & Networking'),
   ('Crafts'), ('Dolls & Bears'), ('DVDs, Films & TV'), ('Events Tickets'), ('Garden & Patio'), ('Health & Beauty'),
@@ -122,5 +135,7 @@ INSERT INTO Category (category) VALUES ('Antiques'), ('Art'), ('Baby'), ('Books,
   ('Music'), ('Musical Instruments'), ('Pet Supplies'), ('Pottery, Porcelain & Glass'), ('Property'),
   ('Sound & Vision'), ('Sporting Goods'), ('Sports Memorabilia'), ('Stamps'), ('Toys & Games'),
   ('Vehicle Parts & Accessories'), ('Video Games & Consoles'), ('Wholesale & Job Lots'), ('Everything Else');
+  
+INSERT INTO State (state) VALUES ('Brand New'), ('Like New'), ('Very Good'), ('Good'), ('Acceptable');
 
 -- End of file.
