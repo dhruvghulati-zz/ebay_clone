@@ -23,7 +23,7 @@ USE ebay_clone;
 -- Tables
 -- Table Auction
 CREATE TABLE Auction (
-  auction_id    INT           NOT NULL,
+  auction_id    INT           NOT NULL AUTO_INCREMENT,
   start_price   DECIMAL(8, 2) NOT NULL,
   reserve_price DECIMAL(8, 2) NOT NULL,
   end_price     DECIMAL(8, 2) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE Auction (
 
 -- Table Bids
 CREATE TABLE Bids (
-  bid_id     INT           NOT NULL,
+  bid_id     INT           NOT NULL AUTO_INCREMENT,
   user_id    INT           NOT NULL,
   auction_id INT           NOT NULL,
   bid_price  DECIMAL(8, 2) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE Category (
 
 -- Table Item
 CREATE TABLE Item (
-  item_id      INT          NOT NULL,
+  item_id      INT          NOT NULL AUTO_INCREMENT,
   item_picture VARCHAR(255) NOT NULL,
   name         VARCHAR(127) NOT NULL,
   features     VARCHAR(255) NOT NULL,
