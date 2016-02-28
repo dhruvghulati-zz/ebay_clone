@@ -146,5 +146,6 @@ INSERT INTO Item (label, description, category_id, state_id) VALUES ('Bouncy Bal
 INSERT INTO Item (label, description, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 7, 5);
 
 -- Sample Data: Test Auctions
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2008-11-11 13:23:44','2008-11-28 15:45:44',46,1,1)
 
 -- End of file.
