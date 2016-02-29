@@ -89,7 +89,7 @@
         }
         ?>
 
-        <div class="col-md-9" style="padding-top:50px">
+        <div class="col-md-12" style="padding-top:50px">
             <p class="lead">Username</p>
             <div class="list-group list-group-horizontal">
                 <?php while ($r = $catq->fetch()): ?>
@@ -107,9 +107,10 @@
     <!--This is the search bar-->
     <div class="container">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="input-group" id="adv-search">
-                    <input type="text" class="form-control" placeholder="Search for auctions"/>
+                    <input type="text" name="by_name_description" class="form-control"
+                           placeholder="Search for auctions by name or description"/>
                     <div class="input-group-btn">
                         <div class="btn-group" role="group">
                             <div class="dropdown dropdown-lg">
@@ -120,12 +121,12 @@
                                         <div class="form-group">
                                             <label for="filter">Sort By</label>
                                             <select class="form-control">
-                                                <option value="0" selected>Lowest Time Remaining</option>
-                                                <option value="1">Highest Time Remaining</option>
-                                                <option value="2">Lowest Price</option>
-                                                <option value="3">Highest Price</option>
-                                                <option value="4">Oldest</option>
-                                                <option value="4">Newest</option>
+                                                <option value="by_lowest_time" selected>Lowest Time Remaining</option>
+                                                <option value="by_highest_time">Highest Time Remaining</option>
+                                                <option value="by_lowest_price">Lowest Price</option>
+                                                <option value="by_highest_price">Highest Price</option>
+                                                <option value="by_oldest">Oldest</option>
+                                                <option value="by_newest">Newest</option>
                                             </select>
                                         </div>
                                         <!--                                            This could be removed if you want the category search above-->
@@ -144,17 +145,14 @@
                                             <select class="form-control">
                                                 <?php while ($r = $catq->fetch()): ?>
                                                     <option
-                                                        value=$r['category_id']><?php echo htmlspecialchars($r['item_category']) ?></option>
+                                                        value=<?php str_replace(' ', '-', strtolower($r['item_category'])) ?>> <?php echo htmlspecialchars($r['item_category']) ?></option>
                                                 <?php endwhile; ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="contain">Seller</label>
-                                            <input class="form-control" type="text"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="contain">Description contains</label>
-                                            <input class="form-control" type="text"/>
+                                            <input class="form-control" type="text" name="by_seller"
+                                                   placeholder="Search by seller name"/>
                                         </div>
                                         <button type="submit" class="btn btn-primary"><span
                                                 class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
@@ -177,24 +175,22 @@
             <?php
             try {
                 //         error_reporting(E_ERROR | E_PARSE);
-                $aucsql = 'SELECT * FROM ebay_clone.Auction';
+                //This ordering works but it is ordering and changing the prices, not the actual products.
+                //Need to change to a huge sql statement
+                //http://stackoverflow.com/questions/11617962/calculating-difference-between-two-timestamps-in-oracle-in-milliseconds
+                $aucsql = 'SELECT * FROM ebay_clone.Auction a
+                INNER JOIN ebay_clone.Item i ON i.item_id = a.item_id
+                INNER JOIN ebay_clone.Users u ON u.user_id = a.user_id
+                ORDER BY (((NOW()-1) - (end_time-1)) * 86400000) ASC';
                 $aucq = $db->query($aucsql);
                 $aucq->setFetchMode(PDO::FETCH_ASSOC);
-
-                $itemsql = 'SELECT * FROM ebay_clone.Item i INNER JOIN ebay_clone.Auction a ON i.item_id = a.item_id';
-                $itemq = $db->query($itemsql);
-                $itemq->setFetchMode(PDO::FETCH_ASSOC);
-
-                $usersql = 'SELECT * FROM ebay_clone.Users u INNER JOIN ebay_clone.Auction a ON u.user_id = a.user_id';
-                $userq = $db->query($usersql);
-                $userq->setFetchMode(PDO::FETCH_ASSOC);
 
             } catch (PDOException $e) {
                 echo 'ERROR: ' . $e->getMessage();
             }
             ?>
             <div id="auction" class="col-sm-4 col-lg-4 col-md-4">
-
+                <!--                Should these go into a sorted array? http://www.w3schools.com/php/func_array_sort.asp-->
                 <?php while (($auction = $aucq->fetch())): ?>
                     <div class="thumbnail">
                         <img src="http://placehold.it/320x150" alt="">
@@ -203,14 +199,13 @@
                                 echo htmlspecialchars($auction['current_bid']) ?></h4>
                             <h4><a href="productpage.html">
                                     <?php
-                                    $item = $itemq->fetch();
-                                    echo htmlspecialchars($item['name'])
+                                    echo htmlspecialchars($auction['name'])
                                     ?>
                                 </a>
                             </h4>
                             <p>
                                 <?php
-                                echo htmlspecialchars($item['features'])
+                                echo htmlspecialchars($auction['features'])
                                 ?>
                             </p>
                         </div>
@@ -221,14 +216,11 @@
                             </p>
                             <p>
                                 <?php
-                                $user = $userq->fetch();
-                                if (is_array($user) || is_object($user)) {
-
-                                    for ($x = 0; $x <= intval($user['rating']-1); $x++) {
+                                if (is_array($auction) || is_object($auction)) {
+//Check if this works as ratings can be a decimal value too e.g. 3.45. We should also ensure ratings are a incremental figure
+                                    for ($x = 0; $x <= intval($auction['rating'] - 1); $x++) {
                                         echo '<span class="glyphicon glyphicon-star"></span>';
                                     }
-
-
                                 }
                                 ?>
                             </p>

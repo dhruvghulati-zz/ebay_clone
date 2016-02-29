@@ -86,7 +86,7 @@ CREATE TABLE Users (
   last_name       VARCHAR(31)  NOT NULL,
   email           VARCHAR(63)  NOT NULL,
   birthdate       DATE         NOT NULL,
-  rating          INT          NOT NULL,
+  rating          DECIMAL          NOT NULL DEFAULT 0.00,
   role_id         INT          NOT NULL,
   CONSTRAINT Users_pk PRIMARY KEY (user_id)
 );
@@ -137,15 +137,23 @@ INSERT INTO Category (category) VALUES ('Antiques'), ('Art'), ('Baby'), ('Books,
 INSERT INTO State (state) VALUES ('Brand New'), ('Like New'), ('Very Good'), ('Good'), ('Acceptable');
 
 -- Sample Data: Test User
-INSERT INTO Users (username, passwd, first_name, last_name, email, birthdate, rating, role_id)
+INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
 VALUES ('test', '1234', 'test', 'user', 'test@test.com', '1978-11-11', 5, 1);
+INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+VALUES ('test1', '123', 'test1', 'user1', 'test1@test.com', '1989-12-03', 3, 2);
+INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+VALUES ('test2', 'testy', 'test2', 'user2', 'test2@test.com', '1924-12-03', 4.56, 2);
+INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+VALUES ('test3', 'testy1', 'test3', 'user3', 'test3@test.com', '1990-12-03', 3.5, 2);
 
 -- Sample Data: Test Items
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity', 11, 2);
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 12, 1);
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 7, 5);
+INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity','Computers/Tablets & Networking','Like New', 11, 2);
+INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 'Crafts','Brand New',12, 1);
+INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast','Cars, Motorcycles & Vehicles','Acceptable', 7, 5);
+INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable','Clothes, Shoes & Accessories','Good', 8, 4);
 
 -- Sample Data: Test Auctions
-INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2008-11-11 13:23:44','2008-11-28 15:45:44',46,1,1)
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2008-11-11 13:23:44','2008-11-28 15:45:44',46,1,2)
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (10.32, 45.92,56.89,'2012-08-23 16:23:44','2012-08-28 16:12:44',12,3,2)
 
 -- End of file.
