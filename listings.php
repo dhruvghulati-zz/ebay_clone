@@ -80,30 +80,30 @@ echo search_auctions('fiat');
 </nav>
 
 <!--Container for categories-->
-<div class="container">
-    <div class="row">
-        <?php
-        try {
-            //         error_reporting(E_ERROR | E_PARSE);
-            $catsql = 'SELECT * FROM ebay_clone.Category';
-            $catq = $db->query($catsql);
-            $catq->setFetchMode(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo 'ERROR: ' . $e->getMessage();
-        }
-        ?>
-
-        <div class="col-md-12" style="padding-top:50px">
-            <p class="lead">Username</p>
-            <div class="list-group list-group-horizontal">
-                <?php while ($r = $catq->fetch()): ?>
-                    <a href="#" class="list-group-item"><?php echo htmlspecialchars($r['item_category']) ?></a>
-                <?php endwhile; ?>
-            </div>
-        </div>
-        <!--            End of row of categories-->
-    </div>
-</div>
+<!--<div class="container">-->
+<!--    <div class="row">-->
+<!--        --><?php
+//        try {
+//            //         error_reporting(E_ERROR | E_PARSE);
+//            $catsql = 'SELECT * FROM ebay_clone.Category';
+//            $catq = $db->query($catsql);
+//            $catq->setFetchMode(PDO::FETCH_ASSOC);
+//        } catch (PDOException $e) {
+//            echo 'ERROR: ' . $e->getMessage();
+//        }
+//        ?>
+<!---->
+<!--        <div class="col-md-12" style="padding-top:50px">-->
+<!--            <p class="lead">Username</p>-->
+<!--            <div class="list-group list-group-horizontal">-->
+<!--                --><?php //while ($r = $catq->fetch()): ?>
+<!--                    <a href="#" class="list-group-item">--><?php //echo htmlspecialchars($r['item_category']) ?><!--</a>-->
+<!--                --><?php //endwhile; ?>
+<!--            </div>-->
+<!--        </div>-->
+<!--        <!--            End of row of categories-->-->
+<!--    </div>-->
+<!--</div>-->
 
 <script>
     $(document).ready(function(e){
