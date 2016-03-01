@@ -29,10 +29,18 @@ CREATE TABLE Auction (
   current_bid   DECIMAL(8, 2) NOT NULL,
   start_time    DATETIME      NOT NULL,
   end_time      DATETIME      NOT NULL,
-  viewings      INT           NOT NULL,
+  viewings      INT           NOT NULL DEFAULT 0,
   item_id       INT           NOT NULL,
   user_id       INT           NOT NULL,
+    duration_id int  NOT NULL,
   CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
+);
+
+-- Table Duration
+CREATE TABLE Duration (
+  duration_id int  NOT NULL  AUTO_INCREMENT,
+  duration int  NOT NULL,
+  CONSTRAINT Duration_pk PRIMARY KEY (duration_id)
 );
 
 -- Table Bids
@@ -86,7 +94,8 @@ CREATE TABLE Users (
   last_name       VARCHAR(31)  NOT NULL,
   email           VARCHAR(63)  NOT NULL,
   birthdate       DATE         NOT NULL,
-  rating          DECIMAL          NOT NULL DEFAULT 0.00,
+rating_count    INT          NOT NULL,
+  rating          DECIMAL(3,2)      NOT NULL,
   role_id         INT          NOT NULL,
   CONSTRAINT Users_pk PRIMARY KEY (user_id)
 );
@@ -120,6 +129,10 @@ ALTER TABLE Bids ADD CONSTRAINT Users_Bids FOREIGN KEY Users_Bids (user_id)
 -- Reference:  Users_Roles (table: Users)
 ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
   REFERENCES Roles (role_id);
+  
+-- Reference:  Auction_Duration (table: Auction)
+ALTER TABLE Auction ADD CONSTRAINT Auction_Duration FOREIGN KEY Auction_Duration (duration_id)
+REFERENCES Duration (duration_id);
 
 -- Insert Data
 
@@ -136,6 +149,8 @@ INSERT INTO Category (category) VALUES ('Antiques'), ('Art'), ('Baby'), ('Books,
 
 INSERT INTO State (state) VALUES ('Brand New'), ('Like New'), ('Very Good'), ('Good'), ('Acceptable');
 
+INSERT INTO Duration (duration) VALUES (1), (3), (5), (7), (10);
+
 -- Sample Data: Test User
 INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
 VALUES ('test', '1234', 'test', 'user', 'test@test.com', '1978-11-11', 5, 1);
@@ -147,13 +162,13 @@ INSERT INTO Users (username, password, first_name, last_name, email, birthdate, 
 VALUES ('test3', 'testy1', 'test3', 'user3', 'test3@test.com', '1990-12-03', 3.5, 2);
 
 -- Sample Data: Test Items
-INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity','Computers/Tablets & Networking','Like New', 11, 2);
-INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 'Crafts','Brand New',12, 1);
-INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast','Cars, Motorcycles & Vehicles','Acceptable', 7, 5);
-INSERT INTO Item (name, features, item_category, state, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable','Clothes, Shoes & Accessories','Good', 8, 4);
+INSERT INTO Item (name, features, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity', 11, 2);
+INSERT INTO Item (name, features, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 12, 1);
+INSERT INTO Item (name, features, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 7, 5);
+INSERT INTO Item (name, features, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable', 8, 4);
 
 -- Sample Data: Test Auctions
-INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2008-11-11 13:23:44','2008-11-28 15:45:44',46,1,2)
-INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (10.32, 45.92,56.89,'2012-08-23 16:23:44','2012-08-28 16:12:44',12,3,2)
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2016-11-11 13:23:44','2016-11-28 15:45:44',46,1,2)
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (10.32, 45.92,56.89,'2016-08-23 16:23:44','2016-08-28 16:12:44',12,3,2)
 
 -- End of file.

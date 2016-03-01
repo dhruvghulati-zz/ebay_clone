@@ -1,4 +1,5 @@
 <?php
+//global $dsn, $db_user,$db_pass, $db;
 $dsn = 'mysql:host=localhost;dbname=ebay_clone';
 $db_user = 'ebay_admin';
 $db_pass = '192837465';

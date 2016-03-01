@@ -1,6 +1,8 @@
 <?php include 'dbConnection.php';
-
+include 'search.php';
+echo search_auctions('fiat');
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +24,9 @@
     <link href="css/shop-homepage.css" rel="stylesheet">
     <link href="css/dropdown.css" rel="stylesheet">
     <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+<!--    Decided to use CDN not JQuery script-->
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
@@ -101,6 +105,28 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function(e){
+        $("#auction").keyup(function()
+        {
+            $("#auction").show();
+            var x = $(this).val();
+            $.ajax(
+                {
+                    type: 'GET',
+                    url: 'search.php',
+                    data: 'q='+x,
+                    success:function(data)
+                    {
+                        $("#auction").html(data);
+                        console.log(data);
+                    }
+                    ,
+                });
+        });
+    });
+</script>
+
 
 <!-- Page Content -->
 <div class="container">
@@ -109,7 +135,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="input-group" id="adv-search">
-                    <input type="text" name="by_name_description" class="form-control"
+                    <input type="text" name="by_name_description" method="post" class="form-control"
                            placeholder="Search for auctions by name or description"/>
                     <div class="input-group-btn">
                         <div class="btn-group" role="group">
@@ -117,7 +143,8 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                         aria-expanded="false"><span class="caret"></span></button>
                                 <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <form class="form-horizontal" role="form">
+
+                                    <form class="form-horizontal" role="form" method="post">
                                         <div class="form-group">
                                             <label for="filter">Sort By</label>
                                             <select class="form-control">
@@ -130,8 +157,8 @@
                                             </select>
                                         </div>
                                         <!--                                            This could be removed if you want the category search above-->
-                                        <div class="form-group">
-                                            <label for="filter">Category</label>
+                                        <div class="form-group" method="post">
+                                            <label for="filter">Filter by Category</label>
                                             <?php
                                             try {
                                                 //         error_reporting(E_ERROR | E_PARSE);
@@ -142,22 +169,25 @@
                                                 echo 'ERROR: ' . $e->getMessage();
                                             }
                                             ?>
-                                            <select class="form-control">
+                                            <select class="form-control" method="post">
                                                 <?php while ($r = $catq->fetch()): ?>
                                                     <option
                                                         value=<?php str_replace(' ', '-', strtolower($r['item_category'])) ?>> <?php echo htmlspecialchars($r['item_category']) ?></option>
                                                 <?php endwhile; ?>
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="contain">Seller</label>
+
+                                        <div class="form-group" method="post">
+                                            <label for="contain">Filter By Seller</label>
                                             <input class="form-control" type="text" name="by_seller"
                                                    placeholder="Search by seller name"/>
                                         </div>
-                                        <button type="submit" class="btn btn-primary"><span
+                                        <button type="submit" name="submit" class="btn btn-primary"><span
                                                 class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
                                     </form>
+
                                 </div>
+
                             </div>
                             <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search"
                                                                                 aria-hidden="true"></span></button>
@@ -192,6 +222,7 @@
             <div id="auction" class="col-sm-4 col-lg-4 col-md-4">
                 <!--                Should these go into a sorted array? http://www.w3schools.com/php/func_array_sort.asp-->
                 <?php while (($auction = $aucq->fetch())): ?>
+
                     <div class="thumbnail">
                         <img src="http://placehold.it/320x150" alt="">
                         <div class="caption">
@@ -209,6 +240,11 @@
                                 ?>
                             </p>
                         </div>
+                        <div class="ratings pull-right">
+                            <?php
+                            echo abs(min(time(),$auction['end_time']) - max($auction['end_time'],time()))/(60*60*24);
+                            ?>
+                            </div>
                         <div class="ratings">
                             <p class="pull-right"><?php
                                 echo htmlspecialchars($auction['viewings']) . ' Viewings'
