@@ -1,6 +1,9 @@
 <?php include_once 'dbConnection.php';
 //include 'search.php';
 //echo search_auctions('fiat');
+
+session_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -34,50 +37,9 @@
 
 <body>
 
-
-<!-- Navigation -->
-<!--    Support paging via http://www.tutorialspoint.com/php/mysql_paging_php.htm-->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">eBuy Platform</a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li>
-                    <a href="profile.html">Your Profile</a>
-                </li>
-                <li>
-                    <a href="listings.html">Live Listings</a>
-                </li>
-                <li>
-                    <!--                       This should be dependent on your user type-->
-                    <a href="mybids.html">Your Bids/Your Auctions</a>
-                </li>
-                <li>
-                    <!--                       This should be depending on user type-->
-                    <a href="addauction.html">Submit Auction</a>
-                </li>
-                <li>
-                    <a href="index.html">Logout</a>
-                </li>
-
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container -->
-    <!--        End of the navigation bar-->
-</nav>
+<?php
+    include 'nav.php';
+?>
 
 <!--<script>-->
 <!--    $(document).ready(function (e) {-->
@@ -99,8 +61,10 @@
 <!--    });-->
 <!--</script>-->
 <div class="container">
-
-    dfdfads
+    <?php
+        echo $_SESSION['user_id'];
+    echo $_SESSION['role_id'];
+    ?>
 </div>
 
 <!-- Page Content -->
@@ -140,7 +104,7 @@
                                                     <?php $sql = 'SELECT * FROM Category';
                                                     foreach ($db->query($sql) as $row) { ?>
                                                         <option
-                                                            value="<?php echo $row['item_category']; ?>"><?php echo htmlspecialchars($row['item_category']); ?></option>
+                                                            value="<?php echo $row['category_id']; ?>"><?php echo htmlspecialchars($row['category']); ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </div>
@@ -154,7 +118,7 @@
                                                     <?php $sql = 'SELECT * FROM State';
                                                     foreach ($db->query($sql) as $row) { ?>
                                                         <option
-                                                            value="<?php echo $row['state']; ?>"><?php echo htmlspecialchars($row['state']); ?></option>
+                                                            value="<?php echo $row['state_id']; ?>"><?php echo htmlspecialchars($row['state']); ?></option>
                                                     <?php } ?>
                                                 </select>
                                             </div>
@@ -255,13 +219,13 @@
                             <!--                            This should have something to add a value to viewings-->
                             <h4><a href="productpage.html">
                                     <?php
-                                    echo htmlspecialchars($auction['name'])
+                                    echo htmlspecialchars($auction['label'])
                                     ?>
                                 </a>
                             </h4>
                             <p>
                                 <?php
-                                echo htmlspecialchars($auction['features'])
+                                echo htmlspecialchars($auction['description'])
                                 ?>
                             </p>
                         </div>

@@ -94,8 +94,8 @@ CREATE TABLE Users (
   last_name       VARCHAR(31)  NOT NULL,
   email           VARCHAR(63)  NOT NULL,
   birthdate       DATE         NOT NULL,
-  rating_count    INT          NOT NULL,
-  rating          DECIMAL(3,2)      NOT NULL,
+  rating_count    INT          NOT NULL DEFAULT 0,
+  rating          DECIMAL(3,2)      NOT NULL DEFAULT 0,
   role_id         INT          NOT NULL,
   CONSTRAINT Users_pk PRIMARY KEY (user_id)
 );

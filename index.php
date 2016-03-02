@@ -1,3 +1,6 @@
+<?php
+require_once('dbConnection.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +19,7 @@
 
     <!-- Custom CSS -->
     <link href="css/loginregister.css" rel="stylesheet">
-  
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,7 +28,7 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-<!-- jQuery -->
+    <!-- jQuery -->
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
@@ -103,6 +106,19 @@
                                     </div>
                                     <div class="form-group">
                                         <input type="text" name="dob" id="dob" tabindex="5" class="form-control" placeholder="Date of Birth" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="filter">Role</label>
+                                        <select class="form-control" id="role" name="role">
+                                            <option value="" selected disabled hidden>Please Select a Role
+                                            </option>
+                                            <?php $sql = 'SELECT * FROM Roles';
+                                                    foreach ($db->query($sql) as $row) { ?>
+                                                <option value="<?php echo $row['role_id']; ?>">
+                                                    <?php echo htmlspecialchars($row['role']); ?>
+                                                </option>
+                                                <?php } ?>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <input type="password" name="password" id="password" tabindex="6" class="form-control" placeholder="Password">

@@ -1,9 +1,9 @@
 <?php
-require("dbconfig.php");
+require("dbConnection.php");
 
 if(isset($_POST["username"],$_POST["password"])){
 
-    $resp = $db->prepare('SELECT user_id, first_name FROM users WHERE username = :username AND password = :password');
+    $resp = $db->prepare('SELECT user_id, first_name, role_id FROM Users WHERE username = :username AND passwd = :password');
 
     $hashedPass = sha1($_POST["password"],false);
 
@@ -14,17 +14,18 @@ if(isset($_POST["username"],$_POST["password"])){
 
     if($resp->rowCount() == 0){
         echo "Invalid - credentials";
-        header("Location: index.html");
+        header("Location: index.php");
     }else{
         $data = $resp->fetch();
         session_start();
         $y = $data["user_id"];
+        $_SESSION["role_id"] = $data["role_id"];
         $_SESSION["user_id"] = $y;
         $_SESSION["first_name"] = $data["first_name"];
-        header("Location: profile.html");
+        header("Location: listings.php");
     }
 }else{
     echo "Invalid";
-    header("Location: index.html");
+    header("Location: index.php");
 }
 ?>
