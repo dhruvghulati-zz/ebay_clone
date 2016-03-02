@@ -168,7 +168,9 @@ INSERT INTO Item (name, features, category_id, state_id) VALUES ('Fiat Leon', 'R
 INSERT INTO Item (name, features, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable', 8, 4);
 
 -- Sample Data: Test Auctions
-INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2016-11-11 13:23:44','2016-11-28 15:45:44',46,1,2)
-INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (10.32, 45.92,56.89,'2016-08-23 16:23:44','2016-08-28 16:12:44',12,3,2)
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2016-11-11 13:23:44','2016-11-28 15:45:44',46,1,2);
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (10.32, 45.92,56.89,'2016-08-23 16:23:44','2016-08-28 16:12:44',12,3,2);
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (12.54, 10.00,3045.89,'2016-07-23 16:23:44','2016-10-28 16:12:44',90,2,4);
+INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (24.67, 80.67,104.56,'2016-06-23 16:23:44','2016-09-28 16:12:44',157,4,3);
 
 -- End of file.
