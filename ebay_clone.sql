@@ -28,11 +28,11 @@ CREATE TABLE Auction (
   reserve_price DECIMAL(8, 2) NOT NULL,
   current_bid   DECIMAL(8, 2) NOT NULL,
   start_time    DATETIME      NOT NULL,
+  duration_id 	INT  	      NOT NULL,
   end_time      DATETIME      NOT NULL,
   viewings      INT           NOT NULL DEFAULT 0,
   item_id       INT           NOT NULL,
   user_id       INT           NOT NULL,
-    duration_id int  NOT NULL,
   CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
 );
 
@@ -152,25 +152,30 @@ INSERT INTO State (state) VALUES ('Brand New'), ('Like New'), ('Very Good'), ('G
 INSERT INTO Duration (duration) VALUES (1), (3), (5), (7), (10);
 
 -- Sample Data: Test User
-INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+INSERT INTO Users (username, passwd, first_name, last_name, email, birthdate, rating, role_id)
 VALUES ('test', '1234', 'test', 'user', 'test@test.com', '1978-11-11', 5, 1);
-INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+INSERT INTO Users (username, passwd, first_name, last_name, email, birthdate, rating, role_id)
 VALUES ('test1', '123', 'test1', 'user1', 'test1@test.com', '1989-12-03', 3, 2);
-INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+INSERT INTO Users (username, passwd, first_name, last_name, email, birthdate, rating, role_id)
 VALUES ('test2', 'testy', 'test2', 'user2', 'test2@test.com', '1924-12-03', 4.56, 2);
-INSERT INTO Users (username, password, first_name, last_name, email, birthdate, rating, role_id)
+INSERT INTO Users (username, passwd, first_name, last_name, email, birthdate, rating, role_id)
 VALUES ('test3', 'testy1', 'test3', 'user3', 'test3@test.com', '1990-12-03', 3.5, 2);
 
 -- Sample Data: Test Items
-INSERT INTO Item (name, features, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity', 11, 2);
-INSERT INTO Item (name, features, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 12, 1);
-INSERT INTO Item (name, features, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 7, 5);
-INSERT INTO Item (name, features, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable', 8, 4);
+INSERT INTO Item (label, description, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity', 11, 2);
+INSERT INTO Item (label, description, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 12, 1);
+INSERT INTO Item (label, description, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 7, 5);
+INSERT INTO Item (label, description, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable', 8, 4);
 
 -- Sample Data: Test Auctions
+<<<<<<< HEAD
+INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (50.00, 20.00, 24.00, '2016-11-11 13:23:44', 1, '2016-11-28 15:45:44', 46, 1, 2);
+INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (10.32, 45.92, 56.89, '2016-08-23 16:23:44', 2, '2016-08-28 16:12:44', 12, 3, 2);
+=======
 INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (50.00, 20.00,24.00,'2016-11-11 13:23:44','2016-11-28 15:45:44',46,1,2);
 INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (10.32, 45.92,56.89,'2016-08-23 16:23:44','2016-08-28 16:12:44',12,3,2);
 INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (12.54, 10.00,3045.89,'2016-07-23 16:23:44','2016-10-28 16:12:44',90,2,4);
 INSERT INTO `Auction`(`start_price`, `reserve_price`,`current_bid`, `start_time`, `end_time`, `viewings`, `item_id`, `user_id`) VALUES (24.67, 80.67,104.56,'2016-06-23 16:23:44','2016-09-28 16:12:44',157,4,3);
+>>>>>>> origin/master
 
 -- End of file.
