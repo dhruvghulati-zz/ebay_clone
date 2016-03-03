@@ -170,5 +170,29 @@ INSERT INTO Item (label, description, category_id, state_id) VALUES ('Nike Fly K
 -- Sample Data: Test Auctions
 INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (50.00, 20.00, 24.00, '2016-11-11 13:23:44', 1, '2016-11-28 15:45:44', 46, 1, 2);
 INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (10.32, 45.92, 56.89, '2016-08-23 16:23:44', 2, '2016-08-28 16:12:44', 12, 3, 2);
+INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (45.95, 64.00, 96.78, '2016-06-22 09:13:23', 1, '2016-06-25 09:13:23', 3783, 1, 3);
+INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (55.99, 40.00, 89.99, '2016-06-21 11:30:10', 2, '2016-06-23 11:30:10', 123, 4, 3);
+INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (12.78, 23.67, 34.89, '2016-05-11 13:02:44', 3, '2016-05-12 13:08:44', 2455, 3, 4);
+INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (12.45, 45.92, 23.67, '2016-04-10 10:15:00', 4, '2016-04-13 10:15:00', 7891, 2, 4);
+
+-- Sample Data: Test Bids
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (1,1,35.89);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (1,1,26.78);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (1,1,27.57);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (1,1,23.24);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (1,1,18.67);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (1,1,23.45);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (7,1,12.67);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (7,1,24.81);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (7,2,67.89);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (7,2,32.89);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (8,1,23.89);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (8,1,35.33);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (8,2,45.67);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (8,1,45.43);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (8,2,56.57);
+INSERT INTO `Bids`(`user_id`, `auction_id`, `bid_price`) VALUES (8,1,35.78);
+
+
 
 -- End of file.
