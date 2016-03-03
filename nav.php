@@ -22,17 +22,15 @@ include 'dbConnection.php';
                 </li>
                 <li>
                     <?php
-                    if ($_SESSION['role_id'] == 1) {
-                        echo '<a href="mybids.html">Your Auctions</a>';
-                    } else if ($_SESSION['role_id'] == 2) {
-                        echo '<a href="mybids.html">Your Bids</a>';
+                    if ($_SESSION['role_id'] == 2) {
+                        echo '<a href="bidsauctions.php">Your Auctions</a>';
+                    } else if ($_SESSION['role_id'] == 1) {
+                        echo '<a href="bidsauctions.php">Your Bids</a>';
                     }
                     ?>
-                    <!--                       This should be dependent on your user type-->
-
                 </li>
                 <?php
-                if ($_SESSION['role_id'] == 1) {
+                if ($_SESSION['role_id'] == 2) {
                     echo '<li><a href="addauction.php">Submit Auction</a></li>';
                 }
                 ?>
