@@ -39,7 +39,6 @@ include 'nav.php';
                 <!--                    This is the headers of the table-->
                 <thead>
                 <tr>
-
                     <th>Product</th>
                     <?php
                     if ($_SESSION['role_id'] == 2) {
@@ -58,17 +57,19 @@ include 'nav.php';
                 <?php
                 //If seller
                 $userid = $_SESSION['user_id'];
-                if ($_SESSION['role_id'] == 2) {
-                    $sql = "SELECT * FROM Auction WHERE user_id = $userid ORDER BY end_time ASC";
-                }
-                //If buyer
+                //                    Only show the latest bid you have made for a product. Currently we show your max bid as the one when in fact
+                //it should be latest bid
                 if ($_SESSION['role_id'] == 1) {
-//                    Only show the latest bid you have made for a product. Currently we show your max bid as the one when in fact
-                    //it should be latest bid
-                    $sql = "SELECT label,max(bid_price) as bid_price,u.first_name,b.user_id,a.end_time,a.current_bid FROM Bids b INNER JOIN Auction a ON a.auction_id = b.auction_id
+                    $sql = "SELECT a.auction_id, label,max(bid_price) as bid_price,u.first_name,b.user_id,a.end_time,a.current_bid FROM Bids b INNER JOIN Auction a ON a.auction_id = b.auction_id
                             INNER JOIN Users u ON u.user_id = a.user_id
                             INNER JOIN Item i ON a.item_id = i.item_id WHERE b.user_id = $userid
                             GROUP BY b.auction_id ORDER BY a.end_time DESC";
+                }
+                if ($_SESSION['role_id'] == 2) {
+                    $sql = "SELECT * FROM Auction a
+                            INNER JOIN Users u ON a.user_id = u.user_id
+                            INNER JOIN Item i ON a.item_id = i.item_id WHERE a.user_id = $userid
+                            ORDER BY a.end_time DESC";
                 }
                 try {
                     $data = $db->query($sql);
@@ -142,27 +143,36 @@ include 'nav.php';
                                             }
                                             ?>
                                         </strong></span><br>
-                                    <span>Win Status: </span><span class="text-success"><strong>
-                                            <?php
-                                            if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt > time()) {
-                                                echo 'Highest Bidder';
-                                            }
-                                            if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time()) {
-                                                echo 'Item Won';
-                                            }
-                                            if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt > time()) {
-                                                echo 'Losing Item';
-                                            }
-                                            if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt < time()) {
-                                                echo 'Item Lost';
-                                            }
-                                            ?>
-                                        </strong></span>
+                                    <?php
+                                    if ($_SESSION['role_id'] == 1) {
+                                        echo '<span>Win Status: </span><span class="text-success"><strong>';
+
+                                        if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt > time()) {
+                                            echo 'Highest Bidder';
+                                        }
+                                        if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time()) {
+                                            echo 'Item Won';
+                                        }
+                                        if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt > time()) {
+                                            echo 'Losing Item';
+                                        }
+                                        if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt < time()) {
+                                            echo 'Item Lost';
+                                        }
+
+                                        echo '</strong></span>';
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </td>
                         <td class="col-sm-1 col-md-1 text-center"><strong><?php
-                                echo htmlspecialchars($bidauction['bid_price']);
+                                if ($_SESSION['role_id'] == 1) {
+                                    echo htmlspecialchars($bidauction['bid_price']);
+                                }
+                                if ($_SESSION['role_id'] == 2) {
+                                    echo htmlspecialchars($bidauction['reserve_price']);
+                                }
                                 ?></strong></td>
                         <td class="col-sm-1 col-md-1 text-center"><strong><?php
                                 echo htmlspecialchars($bidauction['current_bid'])
@@ -170,14 +180,27 @@ include 'nav.php';
                         <td class="col-sm-1 col-md-1">
                             <?php
                             if ($_SESSION['role_id'] == 1 && $enddt > time()) {
-                                echo '<button type="button" class="btn btn-success" style="margin-top:10px">
-                                <span class="glyphicon glyphicon-hand-up"></span> Raise Bid
-                                </button>';
+                                $id = $bidauction['auction_id'];
+                                echo '<a href="productpage.php?q=' . $id . '" class="btn btn-success" style="margin-top:10px">
+    <span class="glyphicon glyphicon-hand-up"></span> Raise Bid
+    </a>';
                             }
                             if ($_SESSION['role_id'] == 2 && $enddt > time()) {
-                                echo '<button type="button" class="btn btn-danger">
+                                echo '<form action="" method="POST"><button type="submit" name="stopAuction" value="' . $bidauction['auction_id'] . '" class="btn btn-danger">
                                 <span class="glyphicon glyphicon-remove"></span> Stop Auction
-                            </button>';
+                            </button></form>';
+                            }
+                            ?>
+                            <?php
+                            //Cant get this to work.
+                            if (isset($_POST['stopAuction']) and is_numeric($_POST['stopAuction'])) {
+                                $timestamp = gmdate("Y-m-d H:i:s", time());
+                                $updatesql = "UPDATE Auction
+                                SET end_time=$timestamp;
+                                WHERE auction_id= :auctionID";
+                                $stmt = $db->prepare($sql);
+                                $stmt->bindParam(':auctionID', $_POST['stopAuction'], PDO::PARAM_INT);
+                                $stmt->execute();
                             }
                             ?>
                         </td>
@@ -186,7 +209,20 @@ include 'nav.php';
                 <tr>
                     <td>  </td>
                     <td class="col-md-1 text-center"><h3>Potential Total</h3></td>
-                    <td class="col-md-1 text-center"><h3><strong>$31.53</strong></h3></td>
+                    <td class="col-md-1 text-center"><h3><strong>
+                                <?php while (($bidauction = $data->fetch())): ?>
+                                    <?php
+//                                    Can't seem to ge this working'
+                                    $potentialowed = 0.00;
+                                    foreach ($bidauction['current_bid'] as $bid) {
+                                        if ($enddt > time()) {
+                                            $potentialowed += $bid;
+                                        }
+                                    }
+                                    echo htmlspecialchars($potentialowed);
+                                    ?>
+                                <?php endwhile; ?>
+                            </strong></h3></td>
                     <td>
                         <a href="listings.php">
                             <button type="button" href="listings.php" class="btn btn-default">
@@ -199,13 +235,18 @@ include 'nav.php';
                     <td>  </td>
                     <td class="col-md-1 text-center"><h4>Current Owed</h4></td>
                     <td class="col-md-1 text-center"><h4><strong>
-                                <?php
-                                $totalowed = 0;
-                                if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time()) {
-                                    $totalowed += $bidauction['bid_price'];
-                                }
-                                echo $totalowed;
-                                ?>
+                                <?php while (($bidauction = $data->fetch())): ?>
+                                    <?php
+//                                    Can't seem to ge thsi working'
+                                    $totalowed = 0.00;
+                                    foreach ($bidauction['bid_price'] as $bid) {
+                                        if (($bidauction['bid_price'] >= $bidauction['current_bid']) && ($enddt < time())) {
+                                            $totalowed += $bid;
+                                        }
+                                    }
+                                    echo htmlspecialchars($totalowed);
+                                    ?>
+                                <?php endwhile; ?>
                             </strong></h4></td>
                     <td>
                         <button type="button" class="btn btn-success">
