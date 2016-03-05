@@ -82,39 +82,10 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
-    <!-- Navigation
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="listings.html">eBuy Platform</a>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="profile.html">Your Profile</a>
-                    </li>
-                    <li>
-                        <a href="listings.html">Live Listings</a>
-                    </li>
-                    <li>
-                        <a href="mybids.html">Your Bids/Your Auctions</a>
-                    </li>
-                    <li>
-                        <a href="addauction.php">Submit Auction</a>
-                    </li>
-                    <li>
-                        <a href="index.html">Logout</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
+
+    <?php
+    require_once 'nav.php';
+    ?>
 
     <form class="form-horizontal" style="padding-top:50px" role="form" method="post" action="addauction.php" enctype="multipart/form-data">
         <fieldset style="padding-top:50px">
@@ -131,7 +102,8 @@ if (isset($_POST['submit'])) {
                 <div class="col-md-4">
                     <select id="item-category" name="item-category" class="form-control">
                         <option selected disabled hidden>Please Select a Category</option>
-                        <?php $sql = 'SELECT * FROM Category';
+                        <?php
+                        $sql = 'SELECT * FROM Category';
                         foreach ($db -> query($sql) as $row) { ?>
                         <option value = "<?php echo $row['category_id']; ?>"><?php echo $row['category']; ?></option>
                         <?php } ?>
@@ -151,9 +123,10 @@ if (isset($_POST['submit'])) {
                 <div class="col-md-4">
                     <select id="item-state" name="item-state" class="form-control">
                         <option value="" selected disabled hidden>Please Select a Condition</option>
-                        <?php $sql = 'SELECT * FROM State';
+                        <?php
+                        $sql = 'SELECT * FROM State';
                         foreach ($db -> query($sql) as $row) { ?>
-                            <option value = "<?php echo $row['state_id']; ?>"><?php echo $row['state']; ?></option>
+                        <option value = "<?php echo $row['state_id']; ?>"><?php echo $row['state']; ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -178,7 +151,8 @@ if (isset($_POST['submit'])) {
                 <div class="col-md-4">
                     <select id="auction-duration" name="auction-duration" class="form-control">
                         <option value="" selected disabled hidden>Please Select the Auction Duration</option>
-                        <?php $sql = 'SELECT * FROM Duration';
+                        <?php
+                        $sql = 'SELECT * FROM Duration';
                         foreach ($db -> query($sql) as $row) { ?>
                             <option value = "<?php echo $row['duration_id']; ?>"><?php echo $row['duration']; ?> Days</option>
                         <?php } ?>
@@ -196,10 +170,9 @@ if (isset($_POST['submit'])) {
             <div class="form-group">
                 <label class="col-md-4 control-label" for="submit">Ready to Submit?</label>
                 <div class="col-md-4">
-                    <button id="submit" name="submit" class="btn btn-primary">Submit to Listings</button>
+                    <button id="submit" name="sort" value="1" class="btn btn-primary">Submit to Listings</button>
                 </div>
             </div>
-
         </fieldset>
     </form>
 
