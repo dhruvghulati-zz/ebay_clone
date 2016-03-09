@@ -15,7 +15,6 @@ if (isset($_POST['submit'])) {
     $tmp_name = $_FILES['item-image']['tmp_name'];
     $saveddate = date('mdy-Hms');
     $newfilename = 'uploads/item/'.$saveddate.'_'.$image_name;
-    echo $newfilename;
     if (isset($image_name)) {
         if (!empty($image_name)) {
             move_uploaded_file($tmp_name, $newfilename);
@@ -60,6 +59,7 @@ if (isset($_POST['submit'])) {
         else {
             $db->commit();
             echo 'success db';
+            header('Location: listings.php');
         }
     }
 }
@@ -83,9 +83,7 @@ if (isset($_POST['submit'])) {
 
 <body>
 
-    <?php
-    require_once 'nav.php';
-    ?>
+
 
     <form class="form-horizontal" style="padding-top:50px" role="form" method="post" action="addauction.php" enctype="multipart/form-data">
         <fieldset style="padding-top:50px">
@@ -170,7 +168,7 @@ if (isset($_POST['submit'])) {
             <div class="form-group">
                 <label class="col-md-4 control-label" for="submit">Ready to Submit?</label>
                 <div class="col-md-4">
-                    <button id="submit" name="sort" value="1" class="btn btn-primary">Submit to Listings</button>
+                    <button id="submit" name="submit" class="btn btn-primary">Submit to Listings</button>
                 </div>
             </div>
         </fieldset>

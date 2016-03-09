@@ -162,10 +162,10 @@ INSERT INTO Users (username, passwd, first_name, last_name, email, birthdate, ra
 VALUES ('test3', 'testy1', 'test3', 'user3', 'test3@test.com', '1990-12-03', 3.5, 2);
 
 -- Sample Data: Test Items
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity', 11, 2);
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 12, 1);
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 7, 5);
-INSERT INTO Item (label, description, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable', 8, 4);
+INSERT INTO Item (label, description, item_picture, category_id, state_id) VALUES ('Hard Drive', 'Big Capacity', 'uploads/item/hdd.jpg', 11, 2);
+INSERT INTO Item (label, description, item_picture, category_id, state_id) VALUES ('Bouncy Ball', 'Really Bouncy', 'uploads/item/ball.jpg', 12, 1);
+INSERT INTO Item (label, description, item_picture, category_id, state_id) VALUES ('Fiat Leon', 'Really Fast', 'uploads/item/fiat leon.jpg', 7, 5);
+INSERT INTO Item (label, description, item_picture, category_id, state_id) VALUES ('Nike Fly Knit Shoes', 'Comfortable', 'uploads/item/nike.jpg', 8, 4);
 
 -- Sample Data: Test Auctions
 INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (50.00, 20.00, 24.00, '2016-11-11 13:23:44', 1, '2016-11-28 15:45:44', 46, 1, 2);
@@ -176,22 +176,22 @@ INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, durati
 INSERT INTO Auction (start_price, reserve_price, current_bid, start_time, duration_id, end_time, viewings, item_id, user_id) VALUES (12.45, 45.92, 23.67, '2016-04-10 10:15:00', 4, '2016-04-13 10:15:00', 7891, 2, 4);
 
 -- Sample Data: Test Bids
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (1,1,35.89);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (1,1,26.78);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (1,1,27.57);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (1,1,23.24);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (1,1,18.67);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (1,1,23.45);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (7,1,12.67);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (7,1,24.81);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (7,2,67.89);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (7,2,32.89);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (8,1,23.89);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (8,1,35.33);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (8,2,45.67);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (8,1,45.43);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (8,2,56.57);
-INSERT INTO Bids(user_id, auction_id, bid_price) VALUES (8,1,35.78);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (1,1,35.89);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (1,1,26.78);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (1,1,27.57);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (1,1,23.24);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (1,1,18.67);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (1,1,23.45);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (7,1,12.67);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (7,1,24.81);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (7,2,67.89);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (7,2,32.89);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (8,1,23.89);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (8,1,35.33);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (8,2,45.67);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (8,1,45.43);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (8,2,56.57);
+INSERT INTO Bids (user_id, auction_id, bid_price) VALUES (8,1,35.78);
 
 
 

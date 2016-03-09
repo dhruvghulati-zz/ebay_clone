@@ -1,108 +1,79 @@
 <?php
 include 'nav.php';
+//If search has been submitted
 if (isset($_GET['sort'])) {
     $name = $_GET['search-name'];
     $category = $_GET['search-category'];
     $sort = $_GET['sort'];
-    if (isset($_GET['search-name'])) {
-        if ($category != 0) {
-            if ($sort == 1) {
-                $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
+    //If category is set to a category
+    if ($category != 0) {
+        if ($sort == 1) {
+            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
                         FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
                         ORDER BY A.end_time ASC';
-                $stmt = $db->prepare($sql);
-                $stmt->bindValue(':search', '%' . $name . '%');
-                $stmt->bindParam(':category', $category);
-            }
-            else if ($sort == 2) {
-                $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                        FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
-                        ORDER BY A.end_time DESC';
-                $stmt = $db->prepare($sql);
-                $stmt->bindValue(':search', '%' . $name . '%');
-                $stmt->bindParam(':category', $category);
-            }
-            else if ($sort == 3) {
-                $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                        FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
-                        ORDER BY A.current_bid ASC';
-                $stmt = $db->prepare($sql);
-                $stmt->bindValue(':search', '%' . $name . '%');
-                $stmt->bindParam(':category', $category);
-            }
-            else if ($sort == 4) {
-                $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                        FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
-                        ORDER BY A.current_bid DESC';
-                $stmt = $db->prepare($sql);
-                $stmt->bindValue(':search', '%' . $name . '%');
-                $stmt->bindParam(':category', $category);
-            }
-        }
-        else if ($sort == 1) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-            FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.end_time ASC';
-            $stmt = $db ->prepare($sql);
-            $stmt->bindValue(':search','%'.$name.'%');
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':search', '%' . $name . '%');
+            $stmt->bindParam(':category', $category);
         }
         else if ($sort == 2) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-            FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.end_time DESC';
-            $stmt = $db ->prepare($sql);
-            $stmt->bindValue(':search','%'.$name.'%');
+            $sql = 'SELECT A.current_bid, A.end_time, A.viewings,A.auction_id, I.item_picture, I.label, I.description
+                    FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
+                    ORDER BY A.end_time DESC';
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':search', '%' . $name . '%');
+            $stmt->bindParam(':category', $category);
         }
         else if ($sort == 3) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-            FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.current_bid ASC';
-            $stmt = $db ->prepare($sql);
-            $stmt->bindValue(':search','%'.$name.'%');
+            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
+                    FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
+                    ORDER BY A.current_bid ASC';
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':search', '%' . $name . '%');
+            $stmt->bindParam(':category', $category);
         }
         else if ($sort == 4) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-            FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.current_bid DESC';
-            $stmt = $db ->prepare($sql);
-            $stmt->bindValue(':search','%'.$name.'%');
-        }
-    }
-    else if ($category != 0) {
-        if ($sort == 1) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                FROM Auction A, Item I WHERE I.category_id = :category
-                ORDER BY A.end_time ASC';
+            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
+                    FROM Auction A, Item I WHERE I.label LIKE :search AND I.category_id = :category
+                    ORDER BY A.current_bid DESC';
             $stmt = $db->prepare($sql);
-            $stmt->bindParam(':category', $category);
-        } else if ($sort == 2) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                FROM Auction A, Item I WHERE I.category_id = :category
-                ORDER BY A.end_time DESC';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':category', $category);
-        } else if ($sort == 3) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                FROM Auction A, Item I WHERE I.category_id = :category
-                ORDER BY A.current_bid ASC';
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':category', $category);
-        } else if ($sort == 4) {
-            $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-                FROM Auction A, Item I WHERE I.category_id = :category
-                ORDER BY A.current_bid DESC';
-            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':search', '%' . $name . '%');
             $stmt->bindParam(':category', $category);
         }
     }
-    else {
-        $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
-            FROM Auction A, Item I ORDER BY A.end_time ASC';
+    //If category is set to all categories
+    else if ($sort == 1) {
+        $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
+        FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.end_time ASC';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':search', '%' . $name . '%');
+    }
+    else if ($sort == 2) {
+        $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
+        FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.end_time DESC';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':search', '%' . $name . '%');
+    }
+    else if ($sort == 3) {
+        $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
+        FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.current_bid ASC';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':search', '%' . $name . '%');
+    }
+    else if ($sort == 4) {
+        $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
+        FROM Auction A, Item I WHERE I.label LIKE :search ORDER BY A.current_bid DESC';
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':search', '%' . $name . '%');
     }
     $stmt->execute();
-    $result = $stmt -> fetchAll();
-    $currentLink = 'listings2.php?search-name='.$name.'&search-category='.$category;
+    $result = $stmt->fetchAll();
+    $currentLink = 'listings2.php?search-name=' . $name . '&search-category=' . $category;
 }
+//If search has not been submitted
 else {
-    $sql = 'SELECT A.current_bid, A.end_time, A.viewings, I.label, I.description
+    $sql = 'SELECT A.current_bid, A.end_time, A.viewings, A.auction_id, I.item_picture, I.label, I.description
             FROM Auction A, Item I ORDER BY A.end_time ASC';
-    $stmt = $db ->prepare($sql);
+    $stmt = $db -> prepare($sql);
     $stmt -> execute();
     $result = $stmt -> fetchAll();
     $currentLink = 'listings2.php?search-name=&search-category=0';
@@ -142,10 +113,10 @@ else {
         foreach ($result as $item) { ?>
         <div id="auction" class="col-md-2">
             <div class="thumbnail">
-                <img src="http://placehold.it/320x150" alt="">
+                <img src="<?php echo $item['item_picture']; ?>" alt="Item image" width="320" height="150">
                 <div class="caption">
                     <h4 class="pull-right"><?php echo $item['current_bid']; ?></h4>
-                    <h4><a href="productpage.html"><?php echo $item['label']; ?></a></h4>
+                    <h4><a href="productpage.php?auct=<?php echo $item['auction_id']; ?>"><?php echo $item['label']; ?></a></h4>
                     <p><?php echo $item['description']; ?></p>
                 </div>
                 <div class="row viewings">
