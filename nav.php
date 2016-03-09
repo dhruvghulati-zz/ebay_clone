@@ -1,5 +1,6 @@
 <?php
 require_once 'dbConnection.php';
+session_start();
 ?>
 
 <!-- Navigation -->
@@ -26,19 +27,19 @@ require_once 'dbConnection.php';
                 </li>
                 <li>
                     <?php
-                    //if ($_SESSION['role_id'] == 2) {
+                    if ($_SESSION['role_id'] == 2) {
                         echo '<a href="bidsauctions.php">Your Auctions</a>';
-                    //}
-                    //else if ($_SESSION['role_id'] == 1) {
-                        //echo '<a href="bidsauctions.php">Your Bids</a>';
-                    //}
+                    }
+                    else if ($_SESSION['role_id'] == 1) {
+                        echo '<a href="bidsauctions.php">Your Bids</a>';
+                    }
                     ?>
                 </li>
                 <li>
                     <?php
-                    //if ($_SESSION['role_id'] == 2) {
+                    if ($_SESSION['role_id'] == 2) {
                         echo '<a href="addauction.php">Submit Auction</a>';
-                    //}
+                    }
                     ?>
                 </li>
                 <li>
