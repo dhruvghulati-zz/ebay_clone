@@ -2,62 +2,73 @@
 try {
     require 'dbConnection.php';
 
-//    if(!empty($_POST["username"]))
-//    {
-//        $username = $_POST["username"];
-//    }
-//    if(!empty($_POST["password"]))
-//    {
-//        $password = $_POST["username"];
-//    }
-//    if(!empty($_POST["firstname"]))
-//    {
-//        //Do my PHP code
-//    }
-//    if(!empty($_POST["lastname"]))
-//    {
-//        //Do my PHP code
-//    }
-//    if(!empty($_POST["dob"]))
-//    {
-//        //Do my PHP code
-//    }
-//    if(!empty($_POST["userfile"]))
-//    {
-//        //Do my PHP code
-//    }
-//    if(!empty($_POST["email"]))
-//    {
-//        //Do my PHP code
-//    }
+    $sql = "UPDATE Users SET ";
 
-//    Can to multiple update statemeents with where the values are only changed if different via where
-//    http://stackoverflow.com/questions/6677517/update-if-different-changed
+    $username = "";
+    $firstName = "";
+    $lastName = "";
+    $dob = "";
+    $userfile = "";
+    $email = "";
+    $hashedPass = "";
 
-    $sql = "UPDATE Users SET
-    username = COALESCE(:username,username),
-    first_name =COALESCE(:first_name,first_name),
-    email =COALESCE(:email,email),
-    last_name =COALESCE(:last_name,last_name),
-    birthdate =COALESCE(:dob,birthdate),
-    passwd =COALESCE(:password,passwd),
-    profile_picture = COALESCE(:userfile,profile_picture)
-    WHERE user_id =:userID";
-    $ins = $db->prepare($sql);
+    if (!empty($_POST["username"])) {
+        $username = $_POST["username"];
+    }
+    if (!empty($_POST["password"])) {
+        $hashedPass = sha1($_POST["password"], false);
+    }
+    if (!empty($_POST["firstName"])) {
+        $firstName = $_POST["firstName"];
+    }
+    if (!empty($_POST["lastName"])) {
+        $lastName = $_POST["lastName"];
+    }
+    if (!empty($_POST["dob"])) {
+        $dob = $_POST["dob"];
+    }
+    if (!empty($_POST["userfile"])) {
+        $userfile = $_POST["userfile"];
+    }
+    if (!empty($_POST["email"])) {
+        $email = $_POST["email"];
+    }
+    $userID = $_POST['userID'];
 
-    $hashedPass = sha1($_POST["password"],false);
+    $updates = array();
 
-    $ins->bindParam(':username', $_POST["username"] ?: null);
-    $ins->bindParam(':email', $_POST["email"] ?: null);
-    $ins->bindParam(':password', $hashedPass ?: null);
-    $ins->bindParam(':first_name', $_POST["firstname"] ?: null);
-    $ins->bindParam(':last_name', $_POST["lastname"]?: null);
-    $ins->bindParam(':dob', $_POST["dob"]?: null);
-    $ins->bindParam(':userfile', $_POST["userfile"]?: null);
-    $ins->bindParam(':userID', $_POST["userID"])?: null;
-//    Store the user id
+    if ($username != "") {
+        $updates[] = "username='$username'";
+    }
+    if ($firstName != "") {
+        $updates[] = "first_name='$firstName'";
+    }
+    if ($lastName != "") {
+        $updates[] = "last_name='$lastName'";
+    }
+    if ($email != "") {
+        $updates[] = "email='$email'";
+    }
+    if ($dob != "") {
+        $updates[] = "birthdate='$dob'";
+    }
+    if ($userfile != "") {
 
-    $ins->execute();
+        $updates[] = "profile_picture='$userfile'";
+    }
+    if ($hashedPass != "") {
+        $updates[] = "passwd='$hashedPass'";
+    }
+
+    if (count($updates) > 0) {
+        $sql .= implode(', ', $updates) . " WHERE user_id='$userID'";
+    }
+//    Prepare query
+    $updatequery = $db->prepare($sql);
+
+    // execute the query
+    $updatequery->execute();
+
     header('Location: profile.php');
 
 } catch (PDOException $e) {
