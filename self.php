@@ -10,41 +10,59 @@
                     <div class="row">
                         <form id="profile_form" action="updateProfile.php" method="post">
                             <input hidden name="userID" value="<?php echo $user; ?>"/>
-                            <div class="col-md-9 col-lg-9 " align="center"><img alt="User Pic"
-                                                                                src="<?php echo $data['profile_picture']; ?>"
-                                                                                class="img-circle img-responsive"
-                                style="max-width:30%;max-height:30%;">
+                            <div class="col-md-9 col-lg-9 " align="center"><img
+                                    id="imagecanvas"
+                                    alt="User Pic"
+                                    src="<?php echo $data['profile_picture']; ?>"
+                                    class="img-circle img-responsive"
+                                    style="max-width:30%;max-height:30%;">
                                 <p>
                                     <label for="file">Select a file:</label> <input type="file" disabled name="userfile"
-                                                                                    id="file"> <br/>
+                                                                                    id="file"
+                                                                                    onchange="readURL(this);"
+                                    > <br/>
                             </div>
                             <?php
-                            if (isset($_POST['userfile'])){
-                                // Configuration - Your Options
-                                $allowed_filetypes = array('.jpg','.gif','.bmp','.png'); // These will be the types of file that will pass the validation.
-                                $max_filesize = 524288; // Maximum filesize in BYTES (currently 0.5MB).
-                                $upload_path = './uploads/profile/'; // The place the files will be uploaded to (currently a 'files' directory).
-
-                                $filename = $_FILES['userfile']['name']; // Get the name of the file (including file extension).
-                                $ext = substr($filename, strpos($filename,'.'), strlen($filename)-1); // Get the extension from the filename.
-
-                                // Check if the filetype is allowed, if not DIE and inform the user.
-                                if(!in_array($ext,$allowed_filetypes))
-                                    die('The file you attempted to upload is not allowed.');
-
-                                // Now check the filesize, if it is too large then DIE and inform the user.
-                                if(filesize($_FILES['userfile']['tmp_name']) > $max_filesize)
-                                    die('The file you attempted to upload is too large.');
-
-                                // Check if we can upload to the specified path, if not DIE and inform the user.
-                                if(!is_writable($upload_path))
-                                    die('You cannot upload to the specified directory, please CHMOD it to 777.');
-
-                                // Upload the file to your specified path.
-                                if(move_uploaded_file($_FILES['userfile']['tmp_name'],$upload_path . $filename))
-                                    echo 'Your file upload was successful, view the file <a href="' . $upload_path . $filename . '" title="Your File">here</a>'; // It worked.
-                                else
-                                    echo 'There was an error during the file upload.  Please try again.'; // It failed :(.
+                            if (isset($_POST['userfile'])) {
+                                $target_dir = "./uploads/profile";
+                                $target_file = $target_dir . basename($_FILES["userfile"]["name"]);
+                                echo $target_file;
+                                $uploadOk = 1;
+                                $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+                                // Check if image file is a actual image or fake image
+                                if (isset($_POST["submit"])) {
+                                    $check = getimagesize($_FILES["userfile"]["tmp_name"]);
+                                    if ($check !== false) {
+                                        echo "File is an image - " . $check["mime"] . ".";
+                                        $uploadOk = 1;
+                                    } else {
+                                        echo "File is not an image.";
+                                        $uploadOk = 0;
+                                    }
+                                }
+                                // Check file size
+                                if ($_FILES["fileToUpload"]["size"] > 500000) {
+                                    echo "Sorry, your file is too large.";
+                                    $uploadOk = 0;
+                                }
+                                // Allow certain file formats
+                                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                                    && $imageFileType != "gif"
+                                ) {
+                                    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                                    $uploadOk = 0;
+                                }
+                                // Check if $uploadOk is set to 0 by an error
+                                if ($uploadOk == 0) {
+                                    echo "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+                                } else {
+                                    if (move_uploaded_file($_FILES["userfile"]["tmp_name"], $target_file)) {
+                                        echo "The file " . basename($_FILES["userfile"]["name"]) . " has been uploaded.";
+                                    } else {
+                                        echo "Sorry, there was an error uploading your file.";
+                                    }
+                                }
                             }
                             ?>
                             <div class=" col-md-9 col-lg-9 ">
@@ -114,7 +132,7 @@
                                     </tbody>
                                 </table>
                                 <input class="btn btn-sm btn-warning" id="edit" type="button" value="Edit">
-                                    <input class="btn btn-sm btn-success" disabled type="submit" value="Submit">
+                                <input class="btn btn-sm btn-success" disabled type="submit" value="Submit">
                                 </a>
                             </div>
                         </form>
@@ -138,4 +156,20 @@
         }
         frm.elements[0].focus();
     });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imagecanvas')
+                    .attr('src', e.target.result)
+//                    .width(150)
+//                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
 </script>
