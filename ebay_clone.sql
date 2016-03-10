@@ -10,7 +10,7 @@ DROP DATABASE IF EXISTS ebay_clone;
 -- Create new DB
 CREATE DATABASE ebay_clone
   DEFAULT CHARACTER SET utf8
-  DEFAULT COLLATE utf8_general_cBidsi;
+  DEFAULT COLLATE utf8_general_ci;
 
 GRANT SELECT, UPDATE, INSERT, DELETE
   ON ebay_clone.*
