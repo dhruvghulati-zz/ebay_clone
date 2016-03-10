@@ -49,6 +49,7 @@ CREATE TABLE Bids (
   user_id    INT           NOT NULL,
   auction_id INT           NOT NULL,
   bid_price  DECIMAL(8, 2) NOT NULL,
+  bid_time      DATETIME      NOT NULL,
   CONSTRAINT Bids_pk PRIMARY KEY (bid_id)
 );
 
