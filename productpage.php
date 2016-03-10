@@ -47,6 +47,7 @@ include('nav.php');
 if (isset($_GET["auct"])) {
     //Need auction validation
     require("dbConnection.php");
+    session_start();
     $resp = $db->prepare('SELECT * FROM Auction WHERE auction_id = :auction_id');
     $resp->bindParam(':auction_id', $_GET["auct"]);
     $resp->execute();
@@ -140,15 +141,27 @@ if (isset($_GET["auct"])) {
                     <!--                        </div>-->
                     <!--                    </div>-->
                     <h5 class="product-stock"> Time Remaining: <em>10 minutes</em></h5>
-                    <hr>
+
+<!--                    Only buyers can add bids-->
+                    <?php
+                    if($_SESSION['role_id']==1)
+                    {
+                    ?>
+                        <hr>
                     <form id="addBid" action="addbid.php" method="post" role="form">
+                        <input hidden name="bid_time" value="<?php echo time() ?>"/>
+                        <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
                         <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
                         <input hidden name="auction_id" value="<?php echo $data['auction_id']; ?>"/>
                         <input type="number" id="bidInput" min="0" name="new_bid"/>
                         <button id="submit" name="submit" class="btn btn-success">Submit Bid</button>
-                            <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
+                        <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
                     </form>
-                    <hr>
+                        <hr>
+                    <?php
+                    }
+                    ?>
+
                     <!--
                     <div class="btn-group wishlist">
                         <button type="button" class="btn btn-danger">
