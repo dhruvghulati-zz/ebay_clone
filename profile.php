@@ -30,8 +30,8 @@
 </head>
 
 <body>
-    <?php include('nav.html'); 
-    require("dbconfig.php");
+    <?php include('nav.php');
+    require("dbConnection.php");
     $ctrl = true;
 
     if(isset($_GET["user"])){
@@ -40,17 +40,21 @@
     }else{
         $ctrl = true;
         session_start();
+//        Get the user signed in if we don't specify a user in URL
         $user = $_SESSION['user_id'];
     }
-    $resp = $db->prepare('SELECT * FROM users WHERE user_id = :user');
+//
+    $resp = $db->prepare('SELECT * FROM Users WHERE user_id = :user');
     $resp->bindParam(':user',$user);
     $resp->execute();
     $data = $resp->fetch();
-    $resp->closeCursor(); 
-
-    if(isset($_GET["user"])){
+    $resp->closeCursor();
+//    Need to check if set and also not yourself as you cant vote for yourself
+    if(isset($_GET["user"]) && $user!=$_SESSION['user_id']){
+//        Use the foreign user if referring to someone in URL
         include('foreign.php');      
     }else{
+//        Use the foreign user if referring to someone in URL
         include('self.php');
     }
     ?>
