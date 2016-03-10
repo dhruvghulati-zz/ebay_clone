@@ -15,6 +15,7 @@
                                     alt="User Pic"
                                     src="<?php echo $data['profile_picture']; ?>"
                                     class="img-circle img-responsive"
+                                    enctype="multipart/form-data"
                                     style="max-width:30%;max-height:30%;">
                                 <p>
                                     <label for="file">Select a file:</label> <input type="file" disabled name="userfile"
