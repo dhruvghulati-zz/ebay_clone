@@ -158,6 +158,28 @@ if (isset($_GET["auct"])) {
                         <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
                     </form>
                         <hr>
+                        <?php if (isset($_POST['watch']) && strcmp($_POST['watch'],'Watch Item') == 0) {
+                        $sql = 'INSERT INTO Watch VALUES (:userID, :auctionID)';
+                        $stmt = $db -> prepare($sql);
+                        $stmt -> bindParam(':userID', $_SESSION['user_id']);
+                        $stmt -> bindParam(':auctionID', $data['auction_id']);
+                        $stmt -> execute();
+                        $buttonName = 'Watching Item';
+                        }
+                        else if (isset($_POST['watch']) && strcmp($_POST['watch'],'Watching Item') == 0){
+                            $sqlDel = 'DELETE FROM Watch WHERE user_id = :userID AND auction_id = :auctionID';
+                            $stmtDel = $db -> prepare($sqlDel);
+                            $stmtDel -> bindParam(':userID', $_SESSION['user_id']);
+                            $stmtDel -> bindParam(':auctionID', $data['auction_id']);
+                            $stmtDel -> execute();
+                            $buttonName = 'Watch Item';
+                        }
+                        else {
+                            $buttonName = 'Watch Item';
+                        }?>
+                        <form action="productpage.php" method="post" role="form">
+                            <button name="watch" class="btn btn-primary" value="<?php echo $buttonName ?>"><?php echo $buttonName ?></button>
+                        </form>
                     <?php
                     }
                     ?>

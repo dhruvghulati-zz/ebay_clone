@@ -10,7 +10,7 @@ DROP DATABASE IF EXISTS ebay_clone;
 -- Create new DB
 CREATE DATABASE ebay_clone
   DEFAULT CHARACTER SET utf8
-  DEFAULT COLLATE utf8_general_ci;
+  DEFAULT COLLATE utf8_general_cBidsi;
 
 GRANT SELECT, UPDATE, INSERT, DELETE
   ON ebay_clone.*
@@ -23,117 +23,134 @@ USE ebay_clone;
 -- Tables
 -- Table Auction
 CREATE TABLE Auction (
-  auction_id    INT           NOT NULL  AUTO_INCREMENT,
-  start_price   DECIMAL(8, 2) NOT NULL,
-  reserve_price DECIMAL(8, 2) NOT NULL,
-  current_bid   DECIMAL(8, 2) NOT NULL,
-  start_time    DATETIME      NOT NULL,
-  duration_id 	INT  	      NOT NULL,
-  end_time      DATETIME      NOT NULL,
-  viewings      INT           NOT NULL DEFAULT 0,
-  item_id       INT           NOT NULL,
-  user_id       INT           NOT NULL,
-  CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
-);
-
--- Table Duration
-CREATE TABLE Duration (
-  duration_id int  NOT NULL  AUTO_INCREMENT,
-  duration int  NOT NULL,
-  CONSTRAINT Duration_pk PRIMARY KEY (duration_id)
+    auction_id int  NOT NULL  AUTO_INCREMENT,
+    start_price decimal(8,2)  NOT NULL,
+    reserve_price decimal(8,2)  NOT NULL,
+    current_bid decimal(8,2)  NOT NULL,
+    start_time datetime  NOT NULL,
+    duration_id int  NOT NULL,
+    end_time datetime  NOT NULL,
+    viewings int  NOT NULL  DEFAULT 0,
+    item_id int  NOT NULL,
+    user_id int  NOT NULL,
+    CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
 );
 
 -- Table Bids
 CREATE TABLE Bids (
-  bid_id     INT           NOT NULL  AUTO_INCREMENT,
-  user_id    INT           NOT NULL,
-  auction_id INT           NOT NULL,
-  bid_price  DECIMAL(8, 2) NOT NULL,
-  bid_time      DATETIME      NOT NULL,
-  CONSTRAINT Bids_pk PRIMARY KEY (bid_id)
+    bid_id int  NOT NULL  AUTO_INCREMENT,
+    user_id int  NOT NULL,
+    auction_id int  NOT NULL,
+    bid_price decimal(8,2)  NOT NULL,
+    bid_time datetime  NOT NULL,
+    CONSTRAINT Bids_pk PRIMARY KEY (bid_id)
 );
 
 -- Table Category
 CREATE TABLE Category (
-  category_id INT         NOT NULL  AUTO_INCREMENT,
-  category    VARCHAR(63) NOT NULL,
-  CONSTRAINT Category_pk PRIMARY KEY (category_id)
+    category_id int  NOT NULL  AUTO_INCREMENT,
+    category varchar(63)  NOT NULL,
+    CONSTRAINT Category_pk PRIMARY KEY (category_id)
+);
+
+-- Table Duration
+CREATE TABLE Duration (
+    duration_id int  NOT NULL  AUTO_INCREMENT,
+    duration int  NOT NULL,
+    CONSTRAINT Duration_pk PRIMARY KEY (duration_id)
 );
 
 -- Table Item
 CREATE TABLE Item (
-  item_id          INT          NOT NULL  AUTO_INCREMENT,
-  item_picture     VARCHAR(255) NOT NULL,
-  label            VARCHAR(127) NOT NULL,
-  description      VARCHAR(255) NOT NULL,
-  state_id         INT          NOT NULL,
-  category_id      INT          NOT NULL,
-  CONSTRAINT Item_pk PRIMARY KEY (item_id)
+    item_id int  NOT NULL  AUTO_INCREMENT,
+    item_picture varchar(255)  NOT NULL,
+    label varchar(127)  NOT NULL,
+    description varchar(255)  NOT NULL,
+    state_id int  NOT NULL,
+    category_id int  NOT NULL,
+    CONSTRAINT Item_pk PRIMARY KEY (item_id)
 );
 
 -- Table Roles
 CREATE TABLE Roles (
-  role_id INT         NOT NULL  AUTO_INCREMENT,
-  role    VARCHAR(15) NOT NULL,
-  CONSTRAINT Roles_pk PRIMARY KEY (role_id)
+    role_id int  NOT NULL  AUTO_INCREMENT,
+    role varchar(15)  NOT NULL,
+    CONSTRAINT Roles_pk PRIMARY KEY (role_id)
 );
 
 -- Table State
 CREATE TABLE State (
-  state_id INT         NOT NULL  AUTO_INCREMENT,
-  state    VARCHAR(63) NOT NULL,
-  CONSTRAINT State_pk PRIMARY KEY (state_id)
+    state_id int  NOT NULL  AUTO_INCREMENT,
+    state varchar(63)  NOT NULL,
+    CONSTRAINT State_pk PRIMARY KEY (state_id)
 );
 
 -- Table Users
 CREATE TABLE Users (
-  user_id         INT          NOT NULL  AUTO_INCREMENT,
-  username        VARCHAR(31)  NOT NULL,
-  passwd		  VARCHAR(40)  NOT NULL,
-  profile_picture VARCHAR(255) NOT NULL,
-  first_name      VARCHAR(31)  NOT NULL,
-  last_name       VARCHAR(31)  NOT NULL,
-  email           VARCHAR(63)  NOT NULL,
-  birthdate       DATE         NOT NULL,
-  rating_count    INT          NOT NULL DEFAULT 0,
-  rating          DECIMAL(3,2)      NOT NULL DEFAULT 0,
-  role_id         INT          NOT NULL,
-  CONSTRAINT Users_pk PRIMARY KEY (user_id)
+    user_id int  NOT NULL  AUTO_INCREMENT,
+    username varchar(31)  NOT NULL,
+    passwd varchar(40)  NOT NULL,
+    profile_picture varchar(255)  NOT NULL,
+    first_name varchar(31)  NOT NULL,
+    last_name varchar(31)  NOT NULL,
+    email varchar(63)  NOT NULL,
+    birthdate date  NOT NULL,
+    rating_count int  NOT NULL,
+    rating decimal(3,2)  NOT NULL  DEFAULT 0,
+    role_id int  NOT NULL  DEFAULT 0,
+    CONSTRAINT Users_pk PRIMARY KEY (user_id)
 );
 
--- Foreign Keys
+-- Table Watch
+CREATE TABLE Watch (
+    user_id int  NOT NULL,
+    auction_id int  NOT NULL,
+    CONSTRAINT Watch_pk PRIMARY KEY (user_id,auction_id)
+);
+
+
+-- Foreign keys
 
 -- Reference:  Auction_Bids (table: Bids)
 ALTER TABLE Bids ADD CONSTRAINT Auction_Bids FOREIGN KEY Auction_Bids (auction_id)
-  REFERENCES Auction (auction_id);
-
--- Reference:  Auction_Item (table: Auction)
-ALTER TABLE Auction ADD CONSTRAINT Auction_Item FOREIGN KEY Auction_Item (item_id)
-  REFERENCES Item (item_id);
-
--- Reference:  Auction_Users (table: Auction)
-ALTER TABLE Auction ADD CONSTRAINT Auction_Users FOREIGN KEY Auction_Users (user_id)
-  REFERENCES Users (user_id);
-
--- Reference:  Category_Item (table: Item)
-ALTER TABLE Item ADD CONSTRAINT Category_Item FOREIGN KEY Category_Item (category_id)
-  REFERENCES Category (category_id);
-
--- Reference:  Item_condition_id (table: Item)
-ALTER TABLE Item ADD CONSTRAINT Item_condition_id FOREIGN KEY Item_condition_id (state_id)
-  REFERENCES State (state_id);
-
--- Reference:  Users_Bids (table: Bids)
-ALTER TABLE Bids ADD CONSTRAINT Users_Bids FOREIGN KEY Users_Bids (user_id)
-  REFERENCES Users (user_id);
-
--- Reference:  Users_Roles (table: Users)
-ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
-  REFERENCES Roles (role_id);
-  
+    REFERENCES Auction (auction_id);
+    
 -- Reference:  Auction_Duration (table: Auction)
 ALTER TABLE Auction ADD CONSTRAINT Auction_Duration FOREIGN KEY Auction_Duration (duration_id)
-REFERENCES Duration (duration_id);
+    REFERENCES Duration (duration_id);
+    
+-- Reference:  Auction_Item (table: Auction)
+ALTER TABLE Auction ADD CONSTRAINT Auction_Item FOREIGN KEY Auction_Item (item_id)
+    REFERENCES Item (item_id);
+    
+-- Reference:  Auction_Users (table: Auction)
+ALTER TABLE Auction ADD CONSTRAINT Auction_Users FOREIGN KEY Auction_Users (user_id)
+    REFERENCES Users (user_id);
+    
+-- Reference:  Category_Item (table: Item)
+ALTER TABLE Item ADD CONSTRAINT Category_Item FOREIGN KEY Category_Item (category_id)
+    REFERENCES Category (category_id);
+    
+-- Reference:  Item_condition_id (table: Item)
+ALTER TABLE Item ADD CONSTRAINT Item_condition_id FOREIGN KEY Item_condition_id (state_id)
+    REFERENCES State (state_id);
+    
+-- Reference:  Users_Bids (table: Bids)
+ALTER TABLE Bids ADD CONSTRAINT Users_Bids FOREIGN KEY Users_Bids (user_id)
+    REFERENCES Users (user_id);
+    
+-- Reference:  Users_Roles (table: Users)
+ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
+    REFERENCES Roles (role_id);
+    
+-- Reference:  Users_Watch (table: Watch)
+ALTER TABLE Watch ADD CONSTRAINT Users_Watch FOREIGN KEY Users_Watch (user_id)
+    REFERENCES Users (user_id);
+    
+-- Reference:  Watch_Auction (table: Watch)
+ALTER TABLE Watch ADD CONSTRAINT Watch_Auction FOREIGN KEY Watch_Auction (auction_id)
+    REFERENCES Auction (auction_id);
+
 
 -- Insert Data
 
