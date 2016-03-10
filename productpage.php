@@ -165,6 +165,7 @@ if (isset($_GET["auct"])) {
 
                     <li class="active"><a href="#service-one" data-toggle="tab">DESCRIPTION</a></li>
                     <li><a href="#service-two" data-toggle="tab">AUCTION INFO</a></li>
+                    <li><a href="#service-three" data-toggle="tab">BID HISTORY</a></li>
 
                 </ul>
                 <div id="myTabContent" class="tab-content">
@@ -210,6 +211,24 @@ if (isset($_GET["auct"])) {
                             </table>
                         </section>
 
+                    </div>
+                    <div class="tab-pane fade" id="service-three">
+                    	<section class="container">
+                    		<?php
+                    			$bid_history = $db->prepare('SELECT Users.first_name, Users.last_name, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price LIMIT 10');
+      							$bid_history->bindParam(':auct', $data["auction_id"]);
+        						$bid_history->execute();
+
+        						if($bid_history->rowCount() == 0){
+        							echo "<p>You're the first to bid!</p>";
+        						}else{
+        							while($res_bid = $bid_history->fetch()){
+        								echo "<p>".$res_bid["first_name"]." ".$res_bid["last_name"]." ".$res_bid["bid_price"]."</p>";
+        							}
+        							$bid_history->closeCursor();
+        						}
+                    		?>
+                    	</section>
                     </div>
                 </div>
                 <hr>
