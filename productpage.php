@@ -22,23 +22,13 @@
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
     <![endif]-->
     <script src="js/jquery.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-
-    <script src="js/jquery.countdown.js"></script>
-    <link href="css/media.css" rel="stylesheet" type="text/css"/>
-    <script>
-        $(function () {
-            $(".digits").countdown({
-                image: "img/digits.png",
-                format: "dd:hh:mm:ss",
-                endTime: new Date(2013, 12, 2)
-            });
-        });
-    </script>
-
+    <!--    Clock code-->
+    <script src="clockCode/countdown.js"></script>
 </head>
 
 <body>
@@ -132,144 +122,148 @@ if (isset($_GET["auct"])) {
                     <div class="product-price">Current Bid
                         <br>$ <?php echo $data['current_bid']; ?>
                     </div>
-                    <!--                    This is for our timer-->
-                    <!--                    <div class="wrapper">-->
-                    <!--                        <div class="cell">-->
-                    <!--                            <div id="holder">-->
-                    <!--                                <div class="digits"></div>-->
-                    <!--                            </div>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-                    <h5 class="product-stock"> Time Remaining: <em>10 minutes</em></h5>
+                    <h5 class="product-stock" id="timeRem"></h5>
 
-<!--                    Only buyers can add bids-->
+                    <!--                    Only buyers can add bids-->
                     <?php
-                    if($_SESSION['role_id']==1)
+                    if ($_SESSION['role_id'] == 1)
                     {
                     ?>
-                        <hr>
-                    <form id="addBid" action="addbid.php" method="post" role="form">
-                        <input hidden name="bid_time" value="<?php echo time() ?>"/>
-                        <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
-                        <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
-                        <input hidden name="auction_id" value="<?php echo $data['auction_id']; ?>"/>
-                        <input type="number" id="bidInput" min="0" name="new_bid"/>
-                        <button id="submit" name="submit" class="btn btn-success">Submit Bid</button>
-                        <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
-                    </form>
-                        <hr>
-                        <?php if (isset($_POST['watch']) && strcmp($_POST['watch'],'Watch Item') == 0) {
-                        $sql = 'INSERT INTO Watch VALUES (:userID, :auctionID)';
-                        $stmt = $db -> prepare($sql);
-                        $stmt -> bindParam(':userID', $_SESSION['user_id']);
-                        $stmt -> bindParam(':auctionID', $data['auction_id']);
-                        $stmt -> execute();
-                        $buttonName = 'Watching Item';
-                        }
-                        else if (isset($_POST['watch']) && strcmp($_POST['watch'],'Watching Item') == 0){
-                            $sqlDel = 'DELETE FROM Watch WHERE user_id = :userID AND auction_id = :auctionID';
-                            $stmtDel = $db -> prepare($sqlDel);
-                            $stmtDel -> bindParam(':userID', $_SESSION['user_id']);
-                            $stmtDel -> bindParam(':auctionID', $data['auction_id']);
-                            $stmtDel -> execute();
-                            $buttonName = 'Watch Item';
-                        }
-                        else {
-                            $buttonName = 'Watch Item';
-                        }?>
-                        <form action="productpage.php" method="post" role="form">
-                            <button name="watch" class="btn btn-primary" value="<?php echo $buttonName ?>"><?php echo $buttonName ?></button>
-                        </form>
-                    <?php
-                    }
-                    ?>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <form id="addBid" action="addbid.php" method="post" role="form">
+                                <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
+                                <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
+                                <input hidden name="auction_id" value="<?php echo $data['auction_id']; ?>"/>
+                                <input type="number" id="bidInput" min="0" name="new_bid"/>
+                                <button id="submit" name="submit" class="btn btn-success">Submit Bid</button>
+                                <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
+                            </form>
+                        </div>
+                        <div class="col-sm-6">
+                            <?php if (isset($_POST['watch']) && strcmp($_POST['watch'], 'Watch Item') == 0) {
+                                $sql = 'INSERT INTO Watch VALUES (:userID, :auctionID)';
+                                $stmt = $db->prepare($sql);
+                                $stmt->bindParam(':userID', $_SESSION['user_id']);
+                                $stmt->bindParam(':auctionID', $data['auction_id']);
+                                $stmt->execute();
+                                $buttonName = 'Watching Item';
+                            } else if (isset($_POST['watch']) && strcmp($_POST['watch'], 'Watching Item') == 0) {
+                                $sqlDel = 'DELETE FROM Watch WHERE user_id = :userID AND auction_id = :auctionID';
+                                $stmtDel = $db->prepare($sqlDel);
+                                $stmtDel->bindParam(':userID', $_SESSION['user_id']);
+                                $stmtDel->bindParam(':auctionID', $data['auction_id']);
+                                $stmtDel->execute();
+                                $buttonName = 'Watch Item';
+                            } else {
+                                $buttonName = 'Watch Item';
+                            } ?>
+                            <form action="productpage.php?auct=<?php echo $data["auction_id"];?>" method="post" role="form">
+                                <button name="watch" class="btn btn-primary"
+                                        value="<?php echo $buttonName ?>"><?php echo $buttonName ?></button>
+                            </form>
 
-                    <!--
-                    <div class="btn-group wishlist">
-                        <button type="button" class="btn btn-danger">
-                            Add to wishlist
-                        </button>
+                            <?php
+                            }
+                            ?>
+                        </div>
                     </div>
+                </div>
+
+                <!--
+                <div class="btn-group wishlist">
+                    <button type="button" class="btn btn-danger">
+                        Add to wishlist
+                    </button>
+                </div>
 -->
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="col-md-12 product-info">
-                <ul id="myTab" class="nav nav-tabs nav_tabs">
-
-                    <li class="active"><a href="#service-one" data-toggle="tab">DESCRIPTION</a></li>
-                    <li><a href="#service-two" data-toggle="tab">AUCTION INFO</a></li>
-                    <li><a href="#service-three" data-toggle="tab">BID HISTORY</a></li>
-
-                </ul>
-                <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade in active" id="service-one">
-
-                        <section class="container product-info">
-                            <?php echo $item_data['description']; ?>
-                        </section>
-
-                    </div>
-                    <div class="tab-pane fade" id="service-two">
-
-                        <section class="container">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Field</th>
-                                    <th>Value</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="info">Start Price</td>
-                                    <td><?php echo $data["start_price"] . "$"; ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="info">Reserve Price</td>
-                                    <td><?php echo $data["reserve_price"] . "$"; ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="info">Start Time</td>
-                                    <td><?php echo $data["start_time"]; ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="info">End Time</td>
-                                    <td><?php echo $data["end_time"]; ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="info">Viewings</td>
-                                    <td><?php echo $data["viewings"]; ?></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </section>
-
-                    </div>
-                    <div class="tab-pane fade" id="service-three">
-                    	<section class="container">
-                    		<?php
-                    			$bid_history = $db->prepare('SELECT Users.first_name, Users.last_name, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price LIMIT 10');
-      							$bid_history->bindParam(':auct', $data["auction_id"]);
-        						$bid_history->execute();
-
-        						if($bid_history->rowCount() == 0){
-        							echo "<p>You're the first to bid!</p>";
-        						}else{
-        							while($res_bid = $bid_history->fetch()){
-        								echo "<p>".$res_bid["first_name"]." ".$res_bid["last_name"]." ".$res_bid["bid_price"]."</p>";
-        							}
-        							$bid_history->closeCursor();
-        						}
-                    		?>
-                    	</section>
-                    </div>
-                </div>
-                <hr>
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+        <div class="col-md-12 product-info">
+            <ul id="myTab" class="nav nav-tabs nav_tabs">
+
+                <li class="active"><a href="#service-one" data-toggle="tab">DESCRIPTION</a></li>
+                <li><a href="#service-two" data-toggle="tab">AUCTION INFO</a></li>
+                <li><a href="#service-three" data-toggle="tab">BID HISTORY</a></li>
+
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="service-one">
+
+                    <section class="container product-info">
+                        <?php echo $item_data['description']; ?>
+                    </section>
+
+                </div>
+                <div class="tab-pane fade" id="service-two">
+
+                    <section class="container">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="info">Start Price</td>
+                                <td><?php echo $data["start_price"] . "$"; ?></td>
+                            </tr>
+                            <tr>
+                                <td class="info">Reserve Price</td>
+                                <td><?php echo $data["reserve_price"] . "$"; ?></td>
+                            </tr>
+                            <tr>
+                                <td class="info">Start Time</td>
+                                <td><?php echo $data["start_time"]; ?></td>
+                            </tr>
+                            <tr>
+                                <td class="info">End Time</td>
+                                <td><?php echo $data["end_time"]; ?></td>
+                            </tr>
+                            <tr>
+                                <td class="info">Viewings</td>
+                                <td><?php echo $data["viewings"]; ?></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                </div>
+                <div class="tab-pane fade" id="service-three">
+                    <section class="container">
+                        <?php
+                        $bid_history = $db->prepare('SELECT Users.first_name, Users.last_name, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price LIMIT 10');
+                        $bid_history->bindParam(':auct', $data["auction_id"]);
+                        $bid_history->execute();
+
+                        if ($bid_history->rowCount() == 0) {
+                            echo "<p>You're the first to bid!</p>";
+                        } else {
+                            while ($res_bid = $bid_history->fetch()) {
+                                echo "<p>" . $res_bid["first_name"] . " " . $res_bid["last_name"] . " " . $res_bid["bid_price"] . "</p>";
+                            }
+                            $bid_history->closeCursor();
+                        }
+                        ?>
+                    </section>
+                </div>
+                <script>
+                    setClock(<?php
+                        $time = new DateTime($data['end_time']);
+                        echo '"' . $time->format("Y-m-d\TH:i:s") . '"';
+                        ?>, 'productpage.php', 'timeRem');
+                </script>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+</div>
 </div>
 </body>
 

@@ -60,7 +60,7 @@ include 'nav.php';
                 //                    Only show the latest bid you have made for a product. Currently we show your max bid as the one when in fact
                 //it should be latest bid
                 if ($_SESSION['role_id'] == 1) {
-                    $sql = "SELECT a.auction_id, label,max(bid_price) as bid_price,u.first_name,b.user_id,a.end_time,a.current_bid FROM Bids b INNER JOIN Auction a ON a.auction_id = b.auction_id
+                    $sql = "SELECT a.auction_id, viewings, label,item_picture,max(bid_price) as bid_price,u.first_name,b.user_id,a.end_time,a.current_bid FROM Bids b INNER JOIN Auction a ON a.auction_id = b.auction_id
                             INNER JOIN Users u ON u.user_id = a.user_id
                             INNER JOIN Item i ON a.item_id = i.item_id WHERE b.user_id = $userid
                             GROUP BY b.auction_id ORDER BY a.end_time DESC";
@@ -86,18 +86,36 @@ include 'nav.php';
                             <div class="media">
                                 <a class="thumbnail pull-left" href="#"> <img class="media-object"
                                                                               src="<?php
-                                                                              echo htmlspecialchars($bidauction['item_picture'])
+                                                                              echo $bidauction['item_picture'];
                                                                               ?>"
                                                                               style="width: 72px; height: 72px;"> </a>
                                 <div class="media-body">
                                     <!--                                    Should take you to the view auction-->
-                                    <h4 class="media-heading"><a href="#"><?php
-                                            echo htmlspecialchars($bidauction['label'])
+                                    <h4 class="media-heading">
+                                        <a href="productpage.php?auct=<?php echo $bidauction['auction_id']; ?>">
+                                            <?php
+                                            echo htmlspecialchars($bidauction['label']);
                                             ?></a></h4>
                                     <!--                                    Should take you to seller profile-->
-                                    <h5 class="media-heading"> Auctioned By <a href="#"><?php
-                                            echo htmlspecialchars($bidauction['first_name'])
+                                    <?php
+
+                                    $auctionID = $bidauction['auction_id'];
+
+                                    //Get previous bidder id
+                                    $previousSQL = 'SELECT u.user_id, u.username FROM
+                                            Bids b, Users u WHERE b.user_id =u.user_id AND b.auction_id =:auctionID ORDER BY b.bid_price DESC LIMIT 1';
+                                    $previousSTMT = $db->prepare($previousSQL);
+                                    $previousSTMT->bindParam(':auctionID', $auctionID);
+                                    $previousSTMT->execute();
+                                    $result = $previousSTMT->fetch();
+                                    ?>
+                                    <h5 class="media-heading"> Highest Bidder <a
+                                            href="profile.php?user=<?php echo $result['user_id']; ?>"><?php
+                                            echo htmlspecialchars($result['username'])
                                             ?></a></h5>
+                                    <h5 class="media-heading"> Viewings <?php
+                                        echo htmlspecialchars($bidauction['viewings'])
+                                        ?></h5>
                                     <!--                                    Time remaining in days and minutes-->
                                     <h5 class="media-heading"> Time Remaining: <em>
                                             <?php
@@ -181,25 +199,33 @@ include 'nav.php';
                             <?php
                             if ($_SESSION['role_id'] == 1 && $enddt > time()) {
                                 $id = $bidauction['auction_id'];
-                                echo '<a href="productpage.php?q=' . $id . '" class="btn btn-success" style="margin-top:10px">
+                                echo '<a href="productpage.php?auct=' . $id . '" class="btn btn-success" style="margin-top:10px">
     <span class="glyphicon glyphicon-hand-up"></span> Raise Bid
     </a>';
                             }
-                            if ($_SESSION['role_id'] == 2 && $enddt > time()) {
-                                echo '<form action="" method="POST"><button type="submit" name="stopAuction" value="' . $bidauction['auction_id'] . '" class="btn btn-danger">
+                            if ($_SESSION['role_id'] == 2 && $enddt > time())
+                            {
+                                ?>
+                                <form action="" method="POST"><button type="submit" name="stopAuction" value="<?php $bidauction['auction_id'] ?>" class="btn btn-danger">
                                 <span class="glyphicon glyphicon-remove"></span> Stop Auction
-                            </button></form>';
+                            </button></form>
+                            <?php
                             }
                             ?>
                             <?php
                             //Cant get this to work.
                             if (isset($_POST['stopAuction']) and is_numeric($_POST['stopAuction'])) {
-                                $timestamp = gmdate("Y-m-d H:i:s", time());
+                                $now = new DateTime();
+                                $time = $now->format("Y-m-d H:i:s");
+                                echo $time;
                                 $updatesql = "UPDATE Auction
-                                SET end_time=$timestamp;
-                                WHERE auction_id= :auctionID";
-                                $stmt = $db->prepare($sql);
-                                $stmt->bindParam(':auctionID', $_POST['stopAuction'], PDO::PARAM_INT);
+                                SET end_time=:nowtime
+                                WHERE auction_id=:auctionID";
+//                                echo $updatesql;
+                                $stmt = $db->prepare($updatesql);
+                                $stmt->bindParam(':auctionID', $_POST['stopAuction']);
+                                $stmt->bindParam(':nowtime', $time);
+                                echo $stmt;
                                 $stmt->execute();
                             }
                             ?>
@@ -235,20 +261,26 @@ include 'nav.php';
                     <td>  </td>
                     <td class="col-md-1 text-center"><h4>Current Owed</h4></td>
                     <td class="col-md-1 text-center"><h4><strong>
-                                <?php while (($bidauction = $data->fetch())): ?>
-                                    <?php
-//                                    Can't seem to ge thsi working'
-                                    $totalowed = 0.00;
-                                    foreach ($bidauction['bid_price'] as $bid) {
-                                        if (($bidauction['bid_price'] >= $bidauction['current_bid']) && ($enddt < time())) {
-                                            $totalowed += $bid;
-                                        }
+                                <?php
+                                $data2 = $db->query($sql);
+                                ?>
+
+                                <?php
+                                //                                Check if bidder the seller fucks it up
+                                //                                    Can't seem to ge thsi working'
+                                //                                Not saying I owe stuff even thought im highest bidder
+                                $totalowed = 0.00;
+                                foreach ($data2 as $bid) {
+                                    if (($bid['bid_price'] >= $bid['current_bid']) && ($enddt < time())) {
+                                        $totalowed += $bid['bid_price'];
                                     }
-                                    echo htmlspecialchars($totalowed);
-                                    ?>
-                                <?php endwhile; ?>
+                                }
+                                echo htmlspecialchars($totalowed);
+                                ?>
+
                             </strong></h4></td>
                     <td>
+                        <!--                        sellers shouldnt be able to checkout-->
                         <button type="button" class="btn btn-success">
                             Checkout <span class="glyphicon glyphicon-play"></span>
                         </button>

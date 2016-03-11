@@ -22,7 +22,7 @@ if(isset($_POST["username"],$_POST["password"])){
         $_SESSION["role_id"] = $data["role_id"];
         $_SESSION["user_id"] = $y;
         $_SESSION["first_name"] = $data["first_name"];
-        header("Location: listings.php");
+        header("Location: listings2.php");
     }
 }else{
     echo "Invalid";

@@ -17,10 +17,10 @@ function setClock(endtime,destination,id){
 	var clock = document.getElementById(id);
 	var inter = setInterval(function(){
         var timeLeft = getTimeRemaining(endtime);
-        clock.innerHTML = 'days: ' + timeLeft.days + '<br>' +
-                      	'hours: '+ timeLeft.hours + '<br>' +
-                      	'minutes: ' + timeLeft.minutes + '<br>' +
-                      	'seconds: ' + timeLeft.seconds;
+        clock.innerHTML = 'Time Remaining: days: ' + timeLeft.days +
+                      	' hours: '+ timeLeft.hours +
+                      	' minutes: ' + timeLeft.minutes +
+                      	' seconds: ' + timeLeft.seconds;
 		if(timeLeft.total<= 900000){
 			clock.style.color = '#7f0000';
             
@@ -32,4 +32,3 @@ function setClock(endtime,destination,id){
 	},1000);
 }
 
-setClock('2016-03-10T21:39:30','index.php','clo');

@@ -27,9 +27,18 @@ try {
     if (!empty($_POST["dob"])) {
         $dob = $_POST["dob"];
     }
-    if (!empty($_POST["userfile"])) {
-        $userfile = $_POST["userfile"];
+//    Check if the image has been changed from the past
+    $image_name = $_FILES['userfile']['name'];
+    $tmp_name = $_FILES['userfile']['tmp_name'];
+    $saveddate = date('mdy-Hms');
+    $newfilename = 'uploads/profile/' . $saveddate . '_' . $image_name;
+    if (isset($image_name)) {
+        if (!empty($image_name)) {
+            move_uploaded_file($tmp_name, $newfilename);
+        }
     }
+    $userfile = $newfilename;
+
     if (!empty($_POST["email"])) {
         $email = $_POST["email"];
     }
