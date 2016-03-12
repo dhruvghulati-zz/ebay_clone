@@ -43,6 +43,7 @@ CREATE TABLE Bids (
     auction_id int  NOT NULL,
     bid_price decimal(8,2)  NOT NULL,
     bid_time datetime  NOT NULL,
+    winconfirmed bool DEFAULT 0,
     CONSTRAINT Bids_pk PRIMARY KEY (bid_id)
 );
 

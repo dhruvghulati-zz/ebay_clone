@@ -149,7 +149,8 @@ include 'nav.php';
                                             }
 
                                             ?>
-                                        </em></h5>
+                                        </em>
+                                    </h5>
                                     <!--                                    If your bid is more than current bid, bid isnt finished etc-->
                                     <span>Time Status: </span><span class="text-success"><strong>
                                             <?php
@@ -203,13 +204,17 @@ include 'nav.php';
     <span class="glyphicon glyphicon-hand-up"></span> Raise Bid
     </a>';
                             }
-                            if ($_SESSION['role_id'] == 2 && $enddt > time())
-                            {
+                            if ($_SESSION['role_id'] == 2 && $enddt > time()) {
                                 ?>
-                                <form action="" method="POST"><button type="submit" name="stopAuction" value="<?php $bidauction['auction_id'] ?>" class="btn btn-danger">
-                                <span class="glyphicon glyphicon-remove"></span> Stop Auction
-                            </button></form>
-                            <?php
+                                <form action="" method="POST">
+                                    <button type="submit" name="stopAuction"
+                                            value="<?php echo $bidauction['auction_id'] ?>"
+                                            class="btn btn-danger">
+                                        <!--                                    <span class="glyphicon glyphicon-remove"></span>-->
+                                        Stop Auction
+                                    </button>
+                                </form>
+                                <?php
                             }
                             ?>
                             <?php
@@ -217,23 +222,34 @@ include 'nav.php';
                             if (isset($_POST['stopAuction']) and is_numeric($_POST['stopAuction'])) {
                                 $now = new DateTime();
                                 $time = $now->format("Y-m-d H:i:s");
-                                echo $time;
+                                $id = $_POST['stopAuction'];
+//                                echo $time;
                                 $updatesql = "UPDATE Auction
                                 SET end_time=:nowtime
                                 WHERE auction_id=:auctionID";
 //                                echo $updatesql;
                                 $stmt = $db->prepare($updatesql);
-                                $stmt->bindParam(':auctionID', $_POST['stopAuction']);
                                 $stmt->bindParam(':nowtime', $time);
-                                echo $stmt;
+                                $stmt->bindParam(':auctionID', $id);
                                 $stmt->execute();
+                            }
+                            ?>
+                            <?php
+                            if ($_SESSION['role_id'] == 1 && $enddt < time() && $bidauction['bid_price'] >= $bidauction['current_bid']) {
+                                ?>
+                                <button type="button" class="btn btn-success">
+                                    Confirm Win <span class="glyphicon glyphicon-play"></span>
+                                </button>
+                                <?php
                             }
                             ?>
                         </td>
                     </tr>
+
                 <?php endwhile; ?>
                 <tr>
-                    <td>  </td>
+                    <td>  
+                    </td>
                     <td class="col-md-1 text-center"><h3>Potential Total</h3></td>
                     <td class="col-md-1 text-center"><h3><strong>
                                 <?php while (($bidauction = $data->fetch())): ?>
@@ -248,13 +264,10 @@ include 'nav.php';
                                     echo htmlspecialchars($potentialowed);
                                     ?>
                                 <?php endwhile; ?>
-                            </strong></h3></td>
+                            </strong></h3>
+                    </td>
                     <td>
-                        <a href="listings.php">
-                            <button type="button" href="listings.php" class="btn btn-default">
-                                <span class="glyphicon glyphicon-shopping-cart"></span>Back to Live Auctions
-                            </button>
-                        </a>
+
                     </td>
                 </tr>
                 <tr>
@@ -280,10 +293,7 @@ include 'nav.php';
 
                             </strong></h4></td>
                     <td>
-                        <!--                        sellers shouldnt be able to checkout-->
-                        <button type="button" class="btn btn-success">
-                            Checkout <span class="glyphicon glyphicon-play"></span>
-                        </button>
+
                     </td>
                 </tr>
                 </tbody>
