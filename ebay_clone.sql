@@ -99,7 +99,8 @@ CREATE TABLE Users (
     rating_count int  NOT NULL,
     rating decimal(3,2)  NOT NULL  DEFAULT 0,
     role_id int  NOT NULL  DEFAULT 0,
-    CONSTRAINT Users_pk PRIMARY KEY (user_id)
+    CONSTRAINT Users_pk PRIMARY KEY (user_id),
+    UNIQUE KEY(username, email)
 );
 
 -- Table Watch
