@@ -17,7 +17,7 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
 		echo "Passwords do not match";
 	}else{
 		//Check if entry does not exists already
-		$resp = $db->prepare('SELECT username,email FROM Users WHERE username = :username AND email = :email');
+		$resp = $db->prepare('SELECT username,email FROM Users WHERE username = :username AND email = :email LIMIT 1');
 		$resp->bindParam(':username',$_POST["username"]);
 		$resp->bindParam(':email',$_POST["email"]);
 
@@ -27,13 +27,16 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
 
 		if($resp->rowCount() == 0){
 			try{
-				$ins = $db->prepare('INSERT INTO Users VALUES (NULL,:username,:password,:profile_picture,:first_name,:last_name,:email,:dob,DEFAULT,DEFAULT,:role_id)');
+				$ins = $db->prepare('INSERT INTO Users VALUES (NULL,:username,:password,:profile_picture,:first_name,:last_name,:email,STR_TO_DATE(:dob,"%d/%m/%Y"),DEFAULT,DEFAULT,:role_id)');
 				
 				$hashedPass = sha1($_POST["password"],false);
+				//$dateofbirth =\DateTime::createFromFormat('m/d/Y', $_POST["dob"]) ;
+				//$date = $dateofbirth->format('Y-m-d');
+				//$timestamp = $date->getTimestamp();
 
 				$ins->bindParam(':username',$_POST["username"]);
                 $ins->bindParam(':email',$_POST["email"]);
-				//Apparently we should change this, bindParam doesn't allow you to pass string.
+
 				$ins->bindParam(':profile_picture',htmlspecialchars("uploads/profile/stock.jpg"));
 				$ins->bindParam(':password',$hashedPass);
 				$ins->bindParam(':first_name',$_POST["firstname"]);
