@@ -110,8 +110,6 @@ require_once('dbConnection.php');
                                     <div class="form-group">
                                         <label for="filter">Role</label>
                                         <select class="form-control" id="role" name="role">
-                                            <option value="" selected disabled hidden>Please Select a Role
-                                            </option>
                                             <?php $sql = 'SELECT * FROM Roles';
                                                     foreach ($db->query($sql) as $row) { ?>
                                                 <option value="<?php echo $row['role_id']; ?>">
@@ -142,6 +140,44 @@ require_once('dbConnection.php');
         </div>
     </div>
 
+    <div id="errorlog" style="visibility:hidden"></div>
+    
+    <?php
+        if(isset($_GET['val'])){
+            if($_GET['val']=="success"){
+                echo "<script>
+                        $(function() {
+                            $('#errorlog').text('Registration Successful!').css('background-color','#1CA347').css('visibility','visible');
+                            $('#errorlog').delay(2000).fadeOut('slow');
+                        });
+                     </script>";
+            }else{
+                $errString;
+                if($_GET['val']==1){
+                    $errString = 'Passwords do not match!';
+                }else if($_GET['val']==2){
+                    $errString = 'Missing inputs!';
+                }else{
+                    $errString = 'Username or email already exists!';
+                }
+
+                echo "<script>
+                        $(function() {
+                            $('#errorlog').text('".$errString."').css('background-color','#FF072D').css('visibility','visible');
+                            $('#errorlog').delay(2000).fadeOut('slow');
+                            $('#login-form').fadeOut(8);
+                            $('#register-form').delay(10).fadeIn(10);
+                            $('#login-form-link').removeClass('active');
+                            $('#register-form-link').addClass('active');
+                        });
+                     </script>";
+            }
+        }
+
+        
+
+
+    ?>
 </body>
 
 

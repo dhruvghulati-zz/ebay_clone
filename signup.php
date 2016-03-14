@@ -12,9 +12,9 @@ foreach ($required as $field) {
 }
 
 if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST["email"],$_POST["dob"],$_POST["firstname"], $_POST["lastname"]) && !$error_bool){
-	//Check if passwords match
+
 	if($_POST["confirm-password"] != $_POST["password"]){
-		echo "Passwords do not match";
+		header('Location: index.php?val=1');
 	}else{
 		//Check if entry does not exists already
 		$resp = $db->prepare('SELECT username,email FROM Users WHERE username = :username AND email = :email LIMIT 1');
@@ -45,18 +45,17 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
                 $ins->bindParam(':role_id',$_POST["role"]);
 
 				$ins->execute();
-				echo "Registration successful";
-				header('Location: index.php');
+				header('Location: index.php?val=success');
 
 			}catch (PDOException $e){
 				echo $e->getMessage();
 			}
 		}else{
-			echo "Username or email already taken";
+			header('Location: index.php?val=3');
 		}
 	}
 }else{
-	echo "Invalid - Absent inputs: " . implode(", ", $error_tabs);
+	header('Location: index.php?val=2');
 }
 
 ?>

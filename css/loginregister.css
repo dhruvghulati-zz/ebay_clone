@@ -97,3 +97,16 @@ body {
 	background-color: #1CA347;
 	border-color: #1CA347;
 }
+
+#errorlog{
+	background-color:#1CA347 ;
+	width: 30%;
+	height: 50px;
+	margin-top: 50px;
+	padding-top: 13px;
+	color:white;
+	margin:auto;
+	border-radius: 10px;
+	text-align: center;
+	vertical-align: middle;
+}
