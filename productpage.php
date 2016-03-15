@@ -140,17 +140,13 @@ if (isset($_GET["auct"])) {
                                 <button id="submit" name="submit" class="btn btn-success">Submit Bid</button>
                                 <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
                             </form>
+                            <?php
+                            if(!empty($_GET['message']))
+                            {
+                                echo $_GET['message'];
+                            }
+                            ?>
                         </div>
-                        <script>
-                            $('#addBid').submit(function(e) {
-                                // do error checking here
-
-                                If (error) {
-                                    // spend error message to div
-                                    return false; // prevents standard form submission event
-                                }
-                            });
-                        </script>
                         <div class="col-sm-6">
                             <?php if (isset($_POST['watch']) && strcmp($_POST['watch'], 'Watch Item') == 0) {
                                 $sql = 'INSERT INTO Watch VALUES (:userID, :auctionID)';
@@ -169,7 +165,8 @@ if (isset($_GET["auct"])) {
                             } else {
                                 $buttonName = 'Watch Item';
                             } ?>
-                            <form action="productpage.php?auct=<?php echo $data["auction_id"];?>" method="post" role="form">
+                            <form action="productpage.php?auct=<?php echo $data["auction_id"]; ?>" method="post"
+                                  role="form">
                                 <button name="watch" class="btn btn-primary"
                                         value="<?php echo $buttonName ?>"><?php echo $buttonName ?></button>
                             </form>
@@ -180,7 +177,6 @@ if (isset($_GET["auct"])) {
                         </div>
                     </div>
                 </div>
-
                 <!--
                 <div class="btn-group wishlist">
                     <button type="button" class="btn btn-danger">

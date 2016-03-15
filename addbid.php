@@ -75,8 +75,9 @@ if (isset($_POST['submit'])) {
 
         }
         header('Location: bidsauctions.php');
-    } else {
-        echo 'New bid needs to be higher than the current bid';
-        header('Location: productpage.php?auct=' . $auctionID);
+    } else if($newBid <= $currentBid) {
+        $message="New bid needs to be higher than the current bid";
+        $message=urlencode($message);
+        header('Location: productpage.php?auct=' . $auctionID . '&message=' . $message);
     }
 }
