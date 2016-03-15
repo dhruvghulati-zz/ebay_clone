@@ -64,6 +64,18 @@ session_start();
                         <?php } ?>
                     </select>
                 </div>
+                <!-- Search State -->
+                <div class="form-group">
+                    <label class="sr-only" for="item-state">Product Condition</label>
+                    <select id="item-state" name="search-state" class="form-control">
+                        <option value = "0" selected>All Conditions</option>
+                        <?php
+                        $sql = 'SELECT * FROM State';
+                        foreach ($db->query($sql) as $row) { ?>
+                            <option value="<?php echo $row['state_id']; ?>"><?php echo $row['state']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
                 <!-- Search Auction -->
                 <div class="form-group">
                     <label class="sr-only" for="submit">Search</label>
