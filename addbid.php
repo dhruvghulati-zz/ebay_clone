@@ -10,7 +10,6 @@ if (isset($_POST['submit'])) {
     $userID = $_POST['user_id'];
 
     if ($newBid > $currentBid) {
-
         $time = new DateTime();
         $formatTime = $time->format("Y-m-d H:i:s");
 
@@ -77,6 +76,7 @@ if (isset($_POST['submit'])) {
         }
         header('Location: bidsauctions.php');
     } else {
-        header('Location: productpage.php');
+        echo 'New bid needs to be higher than the current bid';
+        header('Location: productpage.php?auct=' . $auctionID);
     }
 }

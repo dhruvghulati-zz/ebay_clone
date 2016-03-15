@@ -101,11 +101,6 @@
                                                    value= <?php echo $data['email']; ?>>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Password</td>
-                                        <td><input type="text" disabled name="password">
-                                        </td>
-                                    </tr>
                                     <!--                                    Conditional label based on who you are -->
                                     <?php
                                     if ($data['role_id'] == 2) {

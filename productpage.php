@@ -141,6 +141,16 @@ if (isset($_GET["auct"])) {
                                 <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
                             </form>
                         </div>
+                        <script>
+                            $('#addBid').submit(function(e) {
+                                // do error checking here
+
+                                If (error) {
+                                    // spend error message to div
+                                    return false; // prevents standard form submission event
+                                }
+                            });
+                        </script>
                         <div class="col-sm-6">
                             <?php if (isset($_POST['watch']) && strcmp($_POST['watch'], 'Watch Item') == 0) {
                                 $sql = 'INSERT INTO Watch VALUES (:userID, :auctionID)';

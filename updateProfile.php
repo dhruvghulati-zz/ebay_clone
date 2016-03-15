@@ -10,13 +10,9 @@ try {
     $dob = "";
     $userfile = "";
     $email = "";
-    $hashedPass = "";
 
     if (!empty($_POST["username"])) {
         $username = $_POST["username"];
-    }
-    if (!empty($_POST["password"])) {
-        $hashedPass = sha1($_POST["password"], false);
     }
     if (!empty($_POST["firstName"])) {
         $firstName = $_POST["firstName"];
@@ -64,9 +60,6 @@ try {
     if ($userfile != "") {
 
         $updates[] = "profile_picture='$userfile'";
-    }
-    if ($hashedPass != "") {
-        $updates[] = "passwd='$hashedPass'";
     }
 
     if (count($updates) > 0) {

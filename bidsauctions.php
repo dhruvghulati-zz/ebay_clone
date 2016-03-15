@@ -53,8 +53,13 @@ include 'nav.php';
                         echo '<th class="text-center">Your Last Bid</th>';
                     }
                     ?>
-
-                    <th class="text-center">Current Price</th>
+                    <?php
+                    if ($_SESSION['role_id'] == 2) {
+                        echo '<th class="text-center">Current Bid</th>';
+                    } else if ($_SESSION['role_id'] == 1) {
+                        echo '<th class="text-center">Current Price</th>';
+                    }
+                    ?>
                     <th> Action</th>
                 </tr>
                 </thead>
@@ -108,62 +113,66 @@ include 'nav.php';
                                     $previousSTMT->bindParam(':auctionID', $auctionID);
                                     $previousSTMT->execute();
                                     $result = $previousSTMT->fetch();
+                                    $enddt = strtotime($bidauction['end_time']);
                                     ?>
                                     <!--                                    Time remaining in days and minutes-->
                                     <h5 id="timeRem" class="media-heading"> Time Remaining: <em>
-                                            <!--                                            --><?php
-                                            $enddt = strtotime($bidauction['end_time']);
+                                            <?php
                                             $daysremaining = date("z", $enddt) - date("z");
                                             $hoursremaining = date("G", $enddt) - date("G");
                                             $minutesremaining = date("i", $enddt) - date("i");
                                             $secondsremaining = date("s", $enddt) - date("s");
-                                            //                                            Put checks for if time remaining is negative
                                             if ($enddt > time()) {
-                                                if ($daysremaining > 1) {
+                                                if ($daysremaining >= 1) {
                                                     echo htmlspecialchars($daysremaining) . ' days' . ' ';
-                                                } else {
-                                                    if ($hoursremaining > 1) {
+                                                    if ($hoursremaining > 0) {
+                                                        echo htmlspecialchars($hoursremaining) . ' hours' . ' ';
+                                                    } else {
+                                                        echo '0 hours ';
+                                                    }
+                                                } else if ($daysremaining < 1) {
+                                                    if ($hoursremaining >= 1) {
                                                         if ($hoursremaining > 0) {
                                                             echo htmlspecialchars($hoursremaining) . ' hours' . ' ';
+                                                        } else {
+                                                            echo '0 hours ';
                                                         }
-                                                    } else {
                                                         if ($minutesremaining > 0) {
                                                             echo htmlspecialchars($minutesremaining) . ' minutes' . ' ';
+                                                        } else {
+                                                            echo '0 minutes ';
                                                         }
                                                         if ($secondsremaining > 0) {
                                                             echo htmlspecialchars($secondsremaining) . ' seconds';
+                                                        } else {
+                                                            echo '0 seconds ';
+                                                        }
+                                                    } else if ($hoursremaining < 1) {
+                                                        if ($minutesremaining > 0) {
+                                                            echo htmlspecialchars($minutesremaining) . ' minutes' . ' ';
+                                                        } else {
+                                                            echo '0 minutes ';
+                                                        }
+                                                        if ($secondsremaining > 0) {
+                                                            echo htmlspecialchars($secondsremaining) . ' seconds';
+                                                        } else {
+                                                            echo '0 seconds ';
                                                         }
                                                     }
                                                 }
-
-                                            }
-                                            if ($enddt <= time()) {
+                                            } else {
                                                 echo 'Sorry, time is up!';
-                                            }
-                                            //
-                                            //                                            ?>
+                                            };
+                                            ?>
                                         </em>
                                     </h5>
                                     <!--                                    If your bid is more than current bid, bid isnt finished etc-->
-                                    <span>Time Status: </span><span class="text-success"><strong>
-                                            <?php
-                                            if ($enddt > time()) {
-                                                echo 'Ongoing';
-                                            }
-                                            if ($enddt < time()) {
-                                                echo 'Finished';
-                                            }
-                                            ?>
-                                        </strong></span><br>
                                     <?php
                                     if ($_SESSION['role_id'] == 1) {
-                                        echo '<span>Win Status: </span><span class="text-success"><strong>';
+                                        echo '<span>Status: </span><span class="text-success"><strong>';
 
                                         if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt > time()) {
                                             echo 'Highest Bidder';
-                                        }
-                                        if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time() && isset($_POST['winConfirm'])) {
-                                            echo 'Item Won';
                                         }
                                         if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt > time()) {
                                             echo 'Losing Item';
@@ -171,25 +180,33 @@ include 'nav.php';
                                         if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt < time()) {
                                             echo 'Item Lost';
                                         }
-
-                                        echo '</strong></span>';
-                                    }
-                                    ?>
-
-                                </div>
-                                <span>Final Status: </span><span class="text-success"><strong>
-                                        <?php
-                                        if ($enddt < time() && $result['bid_confirmed'] == 1) {
-                                            echo 'Confirmed by ' . $result['username'];
+                                        if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time() && $result['bid_confirmed'] == 1) {
+                                            echo 'Win Confirmed';
                                         }
                                         if ($enddt < time() && $result['bid_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
-                                            echo 'Win unconfirmed';
+                                            echo 'Item Won but Unconfirmed';
                                         }
                                         if ($enddt < time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
                                             echo 'Didn\'t meet reserve';
                                         }
-                                        ?>
-                                    </strong></span><br>
+                                    }
+                                    if ($_SESSION['role_id'] == 2) {
+                                        echo '<span>Status: </span><span class="text-success"><strong>';
+                                        if ($result['bid_confirmed'] == 1 && $enddt < time()) {
+                                            echo 'Win Confirmed';
+                                        }
+                                        if ($enddt < time() && $result['bid_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
+                                            echo 'Item Won but Unconfirmed';
+                                        }
+                                        if ($enddt < time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
+                                            echo 'Didn\'t meet reserve';
+                                        }
+                                    }
+                                    echo '</strong></span>';
+
+                                    ?>
+
+                                </div>
                             </div>
                         </td>
                         <td class="col-sm-2 col-md-2"><strong></strong>
@@ -226,14 +243,14 @@ include 'nav.php';
 
                                 echo htmlspecialchars($bidauction['current_bid']);
                                 ?>
-                                <div>
-                                    <span>Reserve: </span><span class="text-success"><strong>
-                                            <?php
-                                            echo $bidauction['reserve_price'];
-                                            ?>
-                                        </strong></span><br>
-                                </div>
-
+                                <!--                                <div>-->
+                                <!--                                    <span>Reserve: </span><span class="text-success"><strong>-->
+                                <!--                                            --><?php
+                                //                                            echo $bidauction['reserve_price'];
+                                //                                            ?>
+                                <!--                                        </strong></span><br>-->
+                                <!--                                </div>-->
+                                <!---->
 
                             </strong>
 
@@ -283,21 +300,20 @@ include 'nav.php';
                             ) {
                                 ?>
                                 <form action="" method="post">
-                                <input hidden name="auction_id" value="<?php echo $bidauction['auction_id']; ?>"/>
-                                <button type="submit" id="confirmwin" name="winConfirm"
-                                        class="btn btn-success showArchived">
-                                <span class="glyphicon glyphicon-play"></span>
-                                <?php
-                                if ($result['bid_confirmed'] == 1){
-                                    echo 'Win Confirmed';
-                                }
-                                else{
-                                    echo 'Confirm Win';
-                                }
-                                ?>
+                                    <input hidden name="auction_id" value="<?php echo $bidauction['auction_id']; ?>"/>
+                                    <button type="submit" id="confirmwin" name="winConfirm"
+                                            class="btn btn-success showArchived">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                        <?php
+                                        if ($result['bid_confirmed'] == 1) {
+                                            echo 'Win Confirmed';
+                                        } else {
+                                            echo 'Confirm Win';
+                                        }
+                                        ?>
                                     </button>
-                                    </form>
-                                    <?php
+                                </form>
+                                <?php
                             }
                             if (isset($_POST['winConfirm'])) {
                                 $id = $_POST['auction_id'];
@@ -309,12 +325,9 @@ include 'nav.php';
                                 $stmt->bindParam(':auctionID', $id);
                                 $stmt->execute();
                             }
-
                             ?>
-
                         </td>
                     </tr>
-
                 <?php endwhile; ?>
                 <tr>
                     <td>  </td>
@@ -329,18 +342,14 @@ include 'nav.php';
 </div>
 <script>
     //This doesn't work because button disappears anyways
-        $('#stopauction').on('click', function () {
-            var $el = $(this),
-                textNode = this.lastChild;
-            $el.find('span').toggleClass('glyphicon-fire glyphicon-road');
-            textNode.nodeValue = ($el.hasClass('stopAuction') ? 'Stop Auction' : 'Auction Stopped');
-            $el.toggleClass('stopAuction');
-        });
+    $('#stopauction').on('click', function () {
+        var $el = $(this),
+            textNode = this.lastChild;
+        $el.find('span').toggleClass('glyphicon-fire glyphicon-road');
+        textNode.nodeValue = ($el.hasClass('stopAuction') ? 'Stop Auction' : 'Auction Stopped');
+        $el.toggleClass('stopAuction');
+    });
 
-        setClock(<?php
-        //        $time = new DateTime($bidauction['end_time']);
-        //        echo '"' . $time->format("Y-m-d\TH:i:s") . '"';
-        //        ?>//, 'bidsauctions.php', 'timeRem');
 </script>
 </body>
 </html>
