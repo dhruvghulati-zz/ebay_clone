@@ -31,7 +31,7 @@ if (isset($_POST['submit'])) {
     $enddate = $enddate->modify('+' . $value . ' day');
     $formatend = $enddate->format('Y-m-d H:i:s');
     $itemSQL = 'INSERT INTO Item VALUES (NULL, :item_picture, :label, :description, :state_id, :category_id)';
-    $auctionSQL = 'INSERT INTO Auction VALUES (NULL, :start_price, :reserve_price, 0, :start_time, :duration_id, :end_time,
+    $auctionSQL = 'INSERT INTO Auction VALUES (NULL, :start_price, :reserve_price, :start_price, :start_time, :duration_id, :end_time,
               DEFAULT, LAST_INSERT_ID(), :user_id)';
     $itemSTMT = $db->prepare($itemSQL);
     $itemSTMT->bindParam(':item_picture', $newfilename);
