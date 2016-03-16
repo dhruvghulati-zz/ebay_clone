@@ -70,7 +70,7 @@ include 'nav.php';
                 $userid = $_SESSION['user_id'];
                 //If bidder
                 if ($_SESSION['role_id'] == 1) {
-                    $sql = "SELECT a.auction_id,a.reserve_price, a.viewings, i.label,i.item_picture,max(b.bid_price) as bid_price,u.first_name,b.user_id, u.email, a.end_time,a.current_bid FROM Bids b
+                    $sql = "SELECT a.auction_id,a.reserve_price, a.viewings, i.label,i.item_picture,max(b.bid_price) as bid_price,u.first_name, u.username, b.user_id, u.email, a.end_time,a.current_bid FROM Bids b
                             INNER JOIN Auction a ON a.auction_id = b.auction_id
                             INNER JOIN Users u ON u.user_id = a.user_id
                             INNER JOIN Item i ON a.item_id = i.item_id WHERE b.user_id = $userid
@@ -106,6 +106,17 @@ include 'nav.php';
                                             <?php
                                             echo htmlspecialchars($bidauction['label']);
                                             ?></a></h4>
+                                    <?php
+                                    if($_SESSION['role_id'] == 1)
+                                    {
+                                    ?>
+                                        <h5 class="media-heading"> Sold By: <a
+                                                href="profile.php?user=<?php echo $bidauction['user_id']; ?>"><?php
+                                                echo htmlspecialchars($bidauction['username'])
+                                                ?></a></h5>
+                                     <?php
+                                    }
+                                    ?>
                                     <?php
                                     $auctionID = $bidauction['auction_id'];
                                     $bidSQL = 'SELECT u.user_id, u.username, u.email, u.first_name, u.last_name, b.bid_confirmed FROM
