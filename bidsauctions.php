@@ -119,8 +119,8 @@ include 'nav.php';
                                     ?>
                                     <?php
                                     $auctionID = $bidauction['auction_id'];
-                                    $bidSQL = 'SELECT u.user_id, u.username, u.email, u.first_name, u.last_name, b.bid_confirmed FROM
-                                            Bids b, Users u WHERE b.user_id =u.user_id AND b.auction_id =:auctionID ORDER BY b.bid_price DESC LIMIT 1';
+                                    $bidSQL = 'SELECT u.user_id, u.username, u.email, u.first_name, u.last_name, a.win_confirmed FROM
+                                            Bids b, Users u, Auction a WHERE b.user_id =u.user_id AND b.auction_id =:auctionID AND a.auction_id =:auctionID ORDER BY b.bid_price DESC LIMIT 1';
                                     $bidSQL = $db->prepare($bidSQL);
                                     $bidSQL->bindParam(':auctionID', $auctionID);
                                     $bidSQL->execute();
@@ -192,10 +192,10 @@ include 'nav.php';
                                         if ($bidauction['bid_price'] < $bidauction['current_bid'] && $enddt < time()) {
                                             echo 'Item Lost';
                                         }
-                                        if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time() && $result['bid_confirmed'] == 1) {
+                                        if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time() && $result['win_confirmed'] == 1) {
                                             echo 'Win Confirmed';
                                         }
-                                        if ($enddt < time() && $result['bid_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
+                                        if ($enddt < time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
                                             echo 'Item Won but Unconfirmed';
                                         }
                                         if ($enddt < time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
@@ -204,10 +204,10 @@ include 'nav.php';
                                     }
                                     if ($_SESSION['role_id'] == 2) {
                                         echo '<span>Status: </span><span class="text-success"><strong>';
-                                        if ($result['bid_confirmed'] == 1 && $enddt < time()) {
+                                        if ($result['win_confirmed'] == 1 && $enddt < time()) {
                                             echo 'Win Confirmed';
                                         }
-                                        if ($enddt < time() && $result['bid_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
+                                        if ($enddt < time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
                                             echo 'Item Won but Unconfirmed';
                                         }
                                         if ($enddt < time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
@@ -317,7 +317,7 @@ include 'nav.php';
                                             class="btn btn-success showArchived">
                                         <span class="glyphicon glyphicon-play"></span>
                                         <?php
-                                        if ($result['bid_confirmed'] == 1) {
+                                        if ($result['win_confirmed'] == 1) {
                                             echo 'Win Confirmed';
                                         } else {
                                             echo 'Confirm Win';
@@ -357,8 +357,8 @@ include 'nav.php';
                                     }
 
                                     $id = $_POST['auction_id'];
-                                    $updatesql = "UPDATE Bids
-                                            SET bid_confirmed=1
+                                    $updatesql = "UPDATE Auction
+                                            SET win_confirmed=1
                                             WHERE auction_id=:auctionID";
                                     //                                echo $updatesql;
                                     $stmt = $db->prepare($updatesql);
