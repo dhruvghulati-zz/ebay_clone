@@ -35,3 +35,11 @@
 .opacity{
 	opacity: 0.7;
 }
+
+.yellow{
+    color:yellow;
+}
+
+.padder{
+    padding: 5px;
+}

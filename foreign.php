@@ -71,14 +71,10 @@ if (!empty($data)) {
                             </div>
                         </div>
                     </div>
-                    <div class="panel-footer">
-<!--                        Add rating's ability-->
-                    </div>
-
                 </div>
             </div>
         </div>
-    </div>
+
     <?php
     } else {
         ?>
@@ -114,3 +110,115 @@ if (!empty($data)) {
         <?php
     }
     ?>
+
+    <?php
+        $ans = $db->prepare('SELECT value FROm Rating WHERE sender_id = :sender AND receiver_id =:receiver');
+
+        $ans->bindParam(':sender',$userSEI);
+        $ans->bindParam(':receiver',$_GET["user"]);
+
+        $ans->execute();
+
+        if($ans->rowCount()==0){
+            echo '<div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Rate me!</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row padder">
+                                    <form name="ratingForm" id="rat" action="rating.php" method="post">
+                                        <div id="stars-default"><input type=hidden name="rating"/></div>
+                                        <input type=hidden name="user" value='.$_GET["user"].'/>
+                                        <input type="submit" name="submit" id="submitBtn" value="Submit"/>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                 <script>
+                     $(document).ready(function(){$("#stars-default").rating(); });
+                 </script>';
+        }else{
+           $resa = $ans->fetch();
+           $delt = $resa["value"];
+           $ans->closeCursor();
+           echo '<div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">My Rating of '.$data['username'].' </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row padder">';
+            for($i=0;$i<$delt;$i++){
+                echo '<span class="glyphicon glyphicon-star yellow"></span>' ;
+            }
+                              echo  '</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>';
+
+        }
+        
+
+
+    ?>
+    <!--
+     <div class="row">
+        <div
+            class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Rate me!</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                    <form name="ratingForm" id="rat" action="rating.php" method="post">
+                        <div id="stars-default"><input type=hidden name="rating"/></div>
+                        <input type=hidden name="user" value=<?php echo $_GET["user"]  ?> />
+                        <input type="submit" name="submit" id="submitBtn" value="Submit"/>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+    /*
+        $(document).ready(function(){
+            $("#stars-default").rating();
+        });
+        
+            $("#submitBtn").click(function(){
+                var formData = {
+                    'rating': $('input[name=rating]').val(),
+                    'user': $('input[name=user]').val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "rating.php",
+                    data: formData,
+                    success: function(result){
+                        console.log('Works');
+                        //window.location.href = 'rating.php?da='+formData;
+                    },
+                    error: function(e){
+                        window.location.href = 'rating.php?rating='+$('input[name=rating]').val()+'&user='+$('input[name=user]').val();
+                    }
+                });
+            });
+        });
+        */
+    </script>
+    -->
+
+
