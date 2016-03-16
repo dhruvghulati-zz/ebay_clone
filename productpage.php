@@ -75,10 +75,13 @@ if (isset($_POST['submit'])) {
             }
 
         }
-        header('Location: bidsauctions.php');
+
     } else if($newBid <= $currentBid) {
         $message="New bid needs to be higher than the current bid";
     }
+}
+else {
+    header('Location: redirection.php');
 }
 ?>
 
