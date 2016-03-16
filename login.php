@@ -3,7 +3,7 @@ require("dbConnection.php");
 
 if(isset($_POST["username"],$_POST["password"])){
 
-    $resp = $db->prepare('SELECT user_id, first_name, role_id FROM Users WHERE username = :username AND passwd = :password');
+    $resp = $db->prepare('SELECT user_id, username, role_id FROM Users WHERE username = :username AND passwd = :password');
 
     $hashedPass = sha1($_POST["password"],false);
 
@@ -21,8 +21,8 @@ if(isset($_POST["username"],$_POST["password"])){
         $y = $data["user_id"];
         $_SESSION["role_id"] = $data["role_id"];
         $_SESSION["user_id"] = $y;
-        $_SESSION["first_name"] = $data["first_name"];
-        header("Location: listings2.php");
+        $_SESSION["first_name"] = $data["username"];
+        header("Location: listings.php");
     }
 }else{
     echo "Invalid";

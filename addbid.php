@@ -8,6 +8,7 @@ if (isset($_POST['submit'])) {
     $newBid = $_POST['new_bid'];
     $auctionID = $_POST['auction_id'];
     $userID = $_POST['user_id'];
+    $label = $_POST['item_label'];
 
     if ($newBid > $currentBid) {
         $time = new DateTime();
@@ -63,7 +64,7 @@ if (isset($_POST['submit'])) {
                 $mail->Subject = 'You have been outbid on an auction!';
 
                 //Replace the plain text body with one created manually
-                $mail->Body = 'You just got outbid on the ' . $auctionID . ' auction you were watching! The new bid is: ' . $currentBid;
+                $mail->Body = 'You just got outbid on the ' . $label . ' auction you were watching! The new bid is: ' . $currentBid;
 
                 //send the message, check for errors
                 if (!$mail->send()) {
@@ -77,7 +78,5 @@ if (isset($_POST['submit'])) {
         header('Location: bidsauctions.php');
     } else if($newBid <= $currentBid) {
         $message="New bid needs to be higher than the current bid";
-        $message=urlencode($message);
-        header('Location: productpage.php?auct=' . $auctionID . '&message=' . $message);
     }
 }

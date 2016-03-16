@@ -4,6 +4,7 @@ session_start();
 ?>
 
 <?php
+$errPrice = '';
 if (isset($_POST['submit'])) {
     $name = $_POST['item-name'];
     $category = $_POST['item-category'];
@@ -30,37 +31,42 @@ if (isset($_POST['submit'])) {
     $value = $row['duration'];
     $enddate = $enddate->modify('+' . $value . ' day');
     $formatend = $enddate->format('Y-m-d H:i:s');
-    $itemSQL = 'INSERT INTO Item VALUES (NULL, :item_picture, :label, :description, :state_id, :category_id)';
-    $auctionSQL = 'INSERT INTO Auction VALUES (NULL, :start_price, :reserve_price, :start_price, :start_time, :duration_id, :end_time,
+    if ($reservePrice > $startPrice) {
+        $itemSQL = 'INSERT INTO Item VALUES (NULL, :item_picture, :label, :description, :state_id, :category_id)';
+        $auctionSQL = 'INSERT INTO Auction VALUES (NULL, :start_price, :reserve_price, :start_price, :start_time, :duration_id, :end_time,
               DEFAULT, LAST_INSERT_ID(), :user_id)';
-    $itemSTMT = $db->prepare($itemSQL);
-    $itemSTMT->bindParam(':item_picture', $newfilename);
-    $itemSTMT->bindParam(':label', $name);
-    $itemSTMT->bindParam(':description', $description);
-    $itemSTMT->bindParam(':state_id', $state);
-    $itemSTMT->bindParam(':category_id', $category);
-    $auctionSTMT = $db->prepare($auctionSQL);
-    $auctionSTMT->bindParam(':start_price', $startPrice);
-    $auctionSTMT->bindParam(':reserve_price', $reservePrice);
-    $auctionSTMT->bindParam(':start_time', $formatstart);
-    $auctionSTMT->bindParam(':duration_id', $auctionDuration);
-    $auctionSTMT->bindParam(':end_time', $formatend);
-    $auctionSTMT->bindParam(':user_id', $_SESSION['user_id']);
-    $db->beginTransaction();
-    $itemSTMT->execute();
-    if (!$itemSTMT->rowCount()) {
-        $db->rollBack();
-        echo 'item stmt failed';
-    } else {
-        $auctionSTMT->execute();
-        if (!$auctionSTMT->rowCount()) {
+        $itemSTMT = $db->prepare($itemSQL);
+        $itemSTMT->bindParam(':item_picture', $newfilename);
+        $itemSTMT->bindParam(':label', $name);
+        $itemSTMT->bindParam(':description', $description);
+        $itemSTMT->bindParam(':state_id', $state);
+        $itemSTMT->bindParam(':category_id', $category);
+        $auctionSTMT = $db->prepare($auctionSQL);
+        $auctionSTMT->bindParam(':start_price', $startPrice);
+        $auctionSTMT->bindParam(':reserve_price', $reservePrice);
+        $auctionSTMT->bindParam(':start_time', $formatstart);
+        $auctionSTMT->bindParam(':duration_id', $auctionDuration);
+        $auctionSTMT->bindParam(':end_time', $formatend);
+        $auctionSTMT->bindParam(':user_id', $_SESSION['user_id']);
+        $db->beginTransaction();
+        $itemSTMT->execute();
+        if (!$itemSTMT->rowCount()) {
             $db->rollBack();
-            echo 'auction stmt failed';
+            echo 'item stmt failed';
         } else {
-            $db->commit();
-            echo 'success db';
-            header('Location: listings2.php');
+            $auctionSTMT->execute();
+            if (!$auctionSTMT->rowCount()) {
+                $db->rollBack();
+                echo 'auction stmt failed';
+            } else {
+                $db->commit();
+                echo 'success db';
+                header('Location: listings.php');
+            }
         }
+    }
+    else {
+        $errPrice = "Please ensure that reserve price is bigger than start price";
     }
 }
 ?>
@@ -94,14 +100,14 @@ include 'nav.php';
         <div class="form-group">
             <label class="col-md-4 control-label" for="item-name">Product Name</label>
             <div class="col-md-4">
-                <input id="item-name" name="item-name" placeholder="Product Name" class="form-control">
+                <input id="item-name" name="item-name" placeholder="Product Name" class="form-control" required>
             </div>
         </div>
         <!-- Item Category -->
         <div class="form-group">
             <label class="col-md-4 control-label" for="item-category">Product Category</label>
             <div class="col-md-4">
-                <select id="item-category" name="item-category" class="form-control">
+                <select id="item-category" name="item-category" class="form-control" required>
                     <option selected disabled hidden>Please Select a Category</option>
                     <?php
                     $sql = 'SELECT * FROM Category';
@@ -116,14 +122,14 @@ include 'nav.php';
             <label class="col-md-4 control-label" for="item-description">Product Description</label>
             <div class="col-md-4">
                 <textarea class="form-control" id="item-description" name="item-description"
-                          style="resize:none"></textarea>
+                          style="resize:none" required></textarea>
             </div>
         </div>
         <!-- Item State -->
         <div class="form-group">
             <label class="col-md-4 control-label" for="item-state">Product Condition</label>
             <div class="col-md-4">
-                <select id="item-state" name="item-state" class="form-control">
+                <select id="item-state" name="item-state" class="form-control" required>
                     <option value="" selected disabled hidden>Please Select a Condition</option>
                     <?php
                     $sql = 'SELECT * FROM State';
@@ -137,21 +143,30 @@ include 'nav.php';
         <div class="form-group">
             <label class="col-md-4 control-label" for="start-price">Start Price</label>
             <div class="col-md-4">
-                <input id="start-price" name="start-price" placeholder="Start Price" class="form-control">
+                <div class = "input-group">
+                    <span class="input-group-addon">$</span>
+                    <input type="number" id="start-price" name="start-price" placeholder="Start Price" class="form-control" required>
+                </div>
             </div>
         </div>
         <!-- Reserve Price -->
         <div class="form-group">
             <label class="col-md-4 control-label" for="reserve-price">Reserve Price</label>
             <div class="col-md-4">
-                <input id="reserve-price" name="reserve-price" placeholder="Reserve Price" class="form-control">
+                <div class = "input-group">
+                    <span class="input-group-addon">$</span>
+                    <input type="number" id="reserve-price" name="reserve-price" placeholder="Reserve Price" class="form-control" required>
+                </div>
+                <?php if (!empty($errPrice)){
+                    echo $errPrice;
+                } ?>
             </div>
         </div>
         <!-- Auction Duration -->
         <div class="form-group">
             <label class="col-md-4 control-label" for="auction-duration">Auction Duration</label>
             <div class="col-md-4">
-                <select id="auction-duration" name="auction-duration" class="form-control">
+                <select id="auction-duration" name="auction-duration" class="form-control" required>
                     <option value="" selected disabled hidden>Please Select the Auction Duration</option>
                     <?php
                     $sql = 'SELECT * FROM Duration';
@@ -165,14 +180,14 @@ include 'nav.php';
         <div class="form-group">
             <label class="col-md-4 control-label" for="item-image">Upload Image</label>
             <div class="col-md-4">
-                <input id="item-image" name="item-image" class="input-file" type="file">
+                <input id="item-image" name="item-image" class="input-file" type="file" required>
             </div>
         </div>
         <!-- Submit Auction -->
         <div class="form-group">
             <label class="col-md-4 control-label" for="submit">Ready to Submit?</label>
             <div class="col-md-4">
-                <button id="submit" name="submit" class="btn btn-primary">Submit to Listings</button>
+                <button id="submit" name="submit" class="btn btn-primary" required>Submit to Listings</button>
             </div>
         </div>
     </fieldset>

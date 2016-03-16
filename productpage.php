@@ -1,3 +1,88 @@
+<?php
+
+require_once 'dbConnection.php';
+
+if (isset($_POST['submit'])) {
+
+    $currentBid = $_POST['current_bid'];
+    $newBid = $_POST['new_bid'];
+    $auctionID = $_POST['auction_id'];
+    $userID = $_POST['user_id'];
+    $label = $_POST['item_label'];
+
+    if ($newBid > $currentBid) {
+        $time = new DateTime();
+        $formatTime = $time->format("Y-m-d H:i:s");
+
+        //Insert into the Bids table
+        $bidsql = 'INSERT INTO Bids (user_id, auction_id, bid_price, bid_time)
+        VALUES (:userID, :auctionID, :newBid, :bidTime)';
+        $bidupdate = $db->prepare($bidsql);
+        $bidupdate->bindParam(':userID', $userID);
+        $bidupdate->bindParam(':auctionID', $auctionID);
+        $bidupdate->bindParam(':newBid', $newBid);
+        $bidupdate->bindParam(':bidTime', $formatTime);
+        $bidupdate->execute();
+
+        //Update Auction price
+        $sql = 'UPDATE Auction SET current_bid=:newBid WHERE auction_id=:auctionID';
+        $response = $db->prepare($sql);
+        $response->bindParam(':newBid', $newBid);
+        $response->bindParam(':auctionID', $auctionID);
+        $response->execute();
+
+        //Get previous bidder id
+        $previousSQL = 'SELECT user_id, bid_price FROM ebay_clone.Bids WHERE auction_id = :auctionID ORDER BY bid_price DESC LIMIT 1, 1';
+        $previousSTMT = $db->prepare($previousSQL);
+        $previousSTMT->bindParam(':auctionID', $auctionID);
+        $previousSTMT->execute();
+
+        if ($previousUser = $previousSTMT->fetch()) {
+
+            //Determine if previous bidder is watching this bid
+            $watchSQL = 'SELECT * FROM Watch WHERE user_id = :previousUser AND auction_id = :auctionID';
+            $watchSTMT = $db->prepare($watchSQL);
+            $watchSTMT->bindParam(':previousUser', $previousUser['user_id']);
+            $watchSTMT->bindParam(':auctionID', $auctionID);
+            $watchSTMT->execute();
+
+            if ($watchSTMT->fetch()) {
+
+                include_once 'mailer.php';
+
+                //Get the data of the previous user
+                $userSQL = 'SELECT * FROM Users WHERE user_id = :previousUser';
+                $userSTMT = $db->prepare($userSQL);
+                $userSTMT->bindParam(':previousUser', $previousUser['user_id']);
+                $userSTMT->execute();
+                $user = $userSTMT->fetch();
+
+                //Set who the message is to be sent to
+                $mail->addAddress($user['email'], $user['first_name'] . ' ' . $user['last_name']);
+
+                //Set the subject line
+                $mail->Subject = 'You have been outbid on an auction!';
+
+                //Replace the plain text body with one created manually
+                $mail->Body = 'You just got outbid on the ' . $label . ' auction you were watching! The new bid is: ' . $currentBid;
+
+                //send the message, check for errors
+                if (!$mail->send()) {
+                    //echo "Mailer Error: " . $mail->ErrorInfo;
+                } else {
+                    //echo "Message sent!";
+                }
+            }
+
+        }
+        header('Location: bidsauctions.php');
+    } else if($newBid <= $currentBid) {
+        $message="New bid needs to be higher than the current bid";
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,6 +119,7 @@
 <body>
 <?php
 include('nav.php');
+$message = '';
 if (isset($_GET["auct"])) {
     //Need auction validation
     require("dbConnection.php");
@@ -86,7 +172,7 @@ if (isset($_GET["auct"])) {
         //Complete
     }
 } else {
-    echo "Get not perceived!";
+    header("Location: redirection.php");
 }
 ?>
 <div class="container-fluid" style="padding-top:50px">
@@ -132,23 +218,39 @@ if (isset($_GET["auct"])) {
                     <hr>
                     <div class="row">
                         <div class="col-sm-6">
-                            <form id="addBid" action="addbid.php" method="post" role="form">
+                            <form id="addBid" action="productpage.php" method="post" role="form">
                                 <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
                                 <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
                                 <input hidden name="auction_id" value="<?php echo $data['auction_id']; ?>"/>
+                                <input hidden name="item_label" value="<?php echo $data['label']; ?>"/>
                                 <input type="number" id="bidInput" min="0" name="new_bid"/>
                                 <button id="submit" name="submit" class="btn btn-success">Submit Bid</button>
                                 <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->
                             </form>
                             <?php
-                            if(!empty($_GET['message']))
+                            if(!empty($message))
                             {
-                                echo $_GET['message'];
+                                echo $message;
                             }
                             ?>
                         </div>
                         <div class="col-sm-6">
-                            <?php if (isset($_POST['watch']) && strcmp($_POST['watch'], 'Watch Item') == 0) {
+                            <?php
+                            //Determine if user is watching this bid
+                            $watchSQL = 'SELECT * FROM Watch WHERE user_id = :userID AND auction_id = :auctionID';
+                            $watchSTMT = $db->prepare($watchSQL);
+                            $watchSTMT->bindParam(':userID', $_SESSION['user_id']);
+                            $watchSTMT->bindParam(':auctionID', $data['auction_id']);
+                            $watchSTMT->execute();
+
+                            if ($watchSTMT->fetch()) {
+                                $buttonName = 'Watching Item';
+                            }
+                            else {
+                                $buttonName = 'Watch Item';
+                            }
+
+                            if (isset($_POST['watch']) && strcmp($_POST['watch'], 'Watch Item') == 0) {
                                 $sql = 'INSERT INTO Watch VALUES (:userID, :auctionID)';
                                 $stmt = $db->prepare($sql);
                                 $stmt->bindParam(':userID', $_SESSION['user_id']);
@@ -161,8 +263,6 @@ if (isset($_GET["auct"])) {
                                 $stmtDel->bindParam(':userID', $_SESSION['user_id']);
                                 $stmtDel->bindParam(':auctionID', $data['auction_id']);
                                 $stmtDel->execute();
-                                $buttonName = 'Watch Item';
-                            } else {
                                 $buttonName = 'Watch Item';
                             } ?>
                             <form action="productpage.php?auct=<?php echo $data["auction_id"]; ?>" method="post"
@@ -243,7 +343,7 @@ if (isset($_GET["auct"])) {
                 <div class="tab-pane fade" id="service-three">
                     <section class="container">
                         <?php
-                        $bid_history = $db->prepare('SELECT Users.first_name, Users.last_name, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price LIMIT 10');
+                        $bid_history = $db->prepare('SELECT Users.username, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price LIMIT 10');
                         $bid_history->bindParam(':auct', $data["auction_id"]);
                         $bid_history->execute();
 
@@ -251,7 +351,7 @@ if (isset($_GET["auct"])) {
                             echo "<p>You're the first to bid!</p>";
                         } else {
                             while ($res_bid = $bid_history->fetch()) {
-                                echo "<p>" . $res_bid["first_name"] . " " . $res_bid["last_name"] . " " . $res_bid["bid_price"] . "</p>";
+                                echo "<p>" . $res_bid["username"] . " " . $res_bid["bid_price"] . "</p>";
                             }
                             $bid_history->closeCursor();
                         }

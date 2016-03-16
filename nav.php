@@ -16,14 +16,14 @@ session_start();
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="listings2.php">eBuy Platform</a>
+            <a class="navbar-brand" href="listings.php">eBuy Platform</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li>
-                    <a href="profile.php">Your Profile</a>
+                    <a href="profile.php"><?php echo $_SESSION['first_name']?></a>
                 </li>
                 <li>
                     <?php
@@ -46,7 +46,7 @@ session_start();
                     <a href="logout.php">Logout</a>
                 </li>
             </ul>
-            <form class="navbar-form navbar-right" role="form" method="get" action="listings2.php">
+            <form class="navbar-form navbar-right" role="form" method="get" action="listings.php">
                 <!-- Search Name -->
                 <div class="form-group">
                     <label class="sr-only" for="item-name">Product Name</label>
