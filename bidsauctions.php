@@ -3,7 +3,6 @@
 include_once 'dbConnection.php';
 session_start();
 
-include 'mailer.php';
 
 
 ?>
@@ -299,63 +298,56 @@ include 'nav.php';
                             <!--                            Confirm win logic-->
                             <?php
                             if ($_SESSION['role_id'] == 1 && $enddt < time() && $bidauction['bid_price'] >= $bidauction['current_bid']
-                                && $bidauction['current_bid'] > $bidauction['reserve_price']
-                            ) {
-                                ?>
-                                <form action="" method="post">
-                                    <input hidden name="auction_id" value="<?php echo $bidauction['auction_id']; ?>"/>
-                                    <button type="submit" id="confirmwin" name="winConfirm"
-                                            class="btn btn-success showArchived">
-                                        <span class="glyphicon glyphicon-play"></span>
-                                        <?php
-                                        if (isset($_POST['winConfirm'])) {
-                                            $id = $_POST['auction_id'];
-                                            $updatesql = "UPDATE Bids
-                                SET bid_confirmed=1
-                                WHERE auction_id=:auctionID";
-                                            //                                echo $updatesql;
-                                            $stmt = $db->prepare($updatesql);
-                                            $stmt->bindParam(':auctionID', $id);
-                                            $stmt->execute();
-                                        }
-                                        if ($result['bid_confirmed'] == 1) {
-                                            echo 'Win Confirmed';
-                                        } else {
-                                            echo 'Confirm Win';
-                                        }
+                                && $bidauction['current_bid'] > $bidauction['reserve_price']) {
+                            ?>
+                            <form action="" method="post">
+                                <input hidden name="auction_id" value="<?php echo $bidauction['auction_id']; ?>"/>
+                                <button type="submit" id="confirmwin" name="winConfirm"
+                                        class="btn btn-success showArchived">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                    <?php
+                                    if (isset($_POST['winConfirm'])) {
+                                        include 'mailer.php';
 
-                                        include_once 'mailer.php';
+                                        $mail->addAddress($bidauction['email'], $bidauction['first_name']);
 
-                                        $mail->addAddress($bidauction['email'],$bidauction['first_name']);
-//                                        ​
                                         //Set the subject line
                                         $mail->Subject = 'Your auction has been successfully completed!';
-                                        ​
+
                                         //Replace the plain text body with one created manually
-                                        $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.' ;
-                                        ​
+                                        $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.';
+
                                         //send the message, check for errors
                                         if (!$mail->send()) {
                                             echo "Mailer Error: " . $mail->ErrorInfo;
                                         } else {
                                             echo "Message sent!";
                                         }
-                                        ​
-                                        $mail->addAddress($result['email'],$result['first_name']);
-                                        ​
-                                        //Set the subject line
-                                        $mail->Subject = 'Your have succesfully won an auction!';
-                                        ​
-                                        //Replace the plain text body with one created manually
-                                        $mail->Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account.' ;
-                                        ​
-                                        //send the message, check for errors
+
+                                        include 'mailer.php';
+
+                                        $mail -> addAddress($result['email'], $result['first_name']);
+
+                                        $mail -> Subject = 'You have succesfully won an auction';
+
+                                        $mail -> Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account';
+
                                         if (!$mail->send()) {
                                             echo "Mailer Error: " . $mail->ErrorInfo;
                                         } else {
                                             echo "Message sent!";
                                         }
-                                        ?>
+
+                                        $id = $_POST['auction_id'];
+                                        $updatesql = "UPDATE Bids
+                                            SET bid_confirmed=1
+                                            WHERE auction_id=:auctionID";
+                                        //                                echo $updatesql;
+                                        $stmt = $db->prepare($updatesql);
+                                        $stmt->bindParam(':auctionID', $id);
+                                        $stmt->execute();
+                                    }
+                                    ?>
                                     </button>
                                 </form>
                                 <?php
