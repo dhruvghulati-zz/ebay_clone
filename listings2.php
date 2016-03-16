@@ -1,7 +1,6 @@
 <?php
 include 'nav.php';
 //If search has been submitted
-// WHERE (I.label LIKE '%Bouncy%' OR I.description LIKE '%Bouncy%') AND A.item_id
 if (isset($_GET['sort'])) {
     $category = $_GET['search-category'];
     $state = $_GET['search-state'];
