@@ -33,6 +33,7 @@ CREATE TABLE Auction (
     viewings int  NOT NULL  DEFAULT 0,
     item_id int  NOT NULL,
     user_id int  NOT NULL,
+    win_confirmed BOOLEAN NOT NULL,
     CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
 );
 
@@ -43,7 +44,6 @@ CREATE TABLE Bids (
     auction_id int  NOT NULL,
     bid_price decimal(8,2)  NOT NULL,
     bid_time datetime  NOT NULL,
-    bid_confirmed BOOLEAN NOT NULL,
     CONSTRAINT Bids_pk PRIMARY KEY (bid_id)
 );
 
