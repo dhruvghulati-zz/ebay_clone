@@ -39,3 +39,4 @@ $mail -> Password = "databases";
 
 //Set who the message is to be sent from
 $mail -> setFrom('databaseucl@gmail.com', 'UCL Database');
+

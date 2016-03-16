@@ -3,6 +3,9 @@
 include_once 'dbConnection.php';
 session_start();
 
+include 'mailer.php';
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,7 +93,7 @@ include 'nav.php';
                     echo 'ERROR: ' . $e->getMessage();
                 }
                 ?>
-                <?php while (($bidauction = $data->fetch())): ?>
+                <?php while ($bidauction = $data->fetch()): ?>
                     <tr style="vertical-align">
                         <td class="col-sm-12 col-md-4">
                             <div class="media">
@@ -107,12 +110,12 @@ include 'nav.php';
                                             ?></a></h4>
                                     <?php
                                     $auctionID = $bidauction['auction_id'];
-                                    $previousSQL = 'SELECT u.user_id, u.username,b.bid_confirmed FROM
+                                    $bidSQL = 'SELECT u.user_id, u.username, u.email, u.first_name, u.last_name, b.bid_confirmed FROM
                                             Bids b, Users u WHERE b.user_id =u.user_id AND b.auction_id =:auctionID ORDER BY b.bid_price DESC LIMIT 1';
-                                    $previousSTMT = $db->prepare($previousSQL);
-                                    $previousSTMT->bindParam(':auctionID', $auctionID);
-                                    $previousSTMT->execute();
-                                    $result = $previousSTMT->fetch();
+                                    $bidSQL = $db->prepare($bidSQL);
+                                    $bidSQL->bindParam(':auctionID', $auctionID);
+                                    $bidSQL->execute();
+                                    $result = $bidSQL->fetch();
                                     $enddt = strtotime($bidauction['end_time']);
                                     ?>
                                     <!--                                    Time remaining in days and minutes-->
@@ -305,25 +308,57 @@ include 'nav.php';
                                             class="btn btn-success showArchived">
                                         <span class="glyphicon glyphicon-play"></span>
                                         <?php
+                                        if (isset($_POST['winConfirm'])) {
+                                            $id = $_POST['auction_id'];
+                                            $updatesql = "UPDATE Bids
+                                SET bid_confirmed=1
+                                WHERE auction_id=:auctionID";
+                                            //                                echo $updatesql;
+                                            $stmt = $db->prepare($updatesql);
+                                            $stmt->bindParam(':auctionID', $id);
+                                            $stmt->execute();
+                                        }
                                         if ($result['bid_confirmed'] == 1) {
                                             echo 'Win Confirmed';
                                         } else {
                                             echo 'Confirm Win';
                                         }
+
+                                        include_once 'mailer.php';
+
+                                        $mail->addAddress($bidauction['email'],$bidauction['first_name']);
+//                                        ​
+                                        //Set the subject line
+                                        $mail->Subject = 'Your auction has been successfully completed!';
+                                        ​
+                                        //Replace the plain text body with one created manually
+                                        $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.' ;
+                                        ​
+                                        //send the message, check for errors
+                                        if (!$mail->send()) {
+                                            echo "Mailer Error: " . $mail->ErrorInfo;
+                                        } else {
+                                            echo "Message sent!";
+                                        }
+                                        ​
+                                        $mail->addAddress($result['email'],$result['first_name']);
+                                        ​
+                                        //Set the subject line
+                                        $mail->Subject = 'Your have succesfully won an auction!';
+                                        ​
+                                        //Replace the plain text body with one created manually
+                                        $mail->Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account.' ;
+                                        ​
+                                        //send the message, check for errors
+                                        if (!$mail->send()) {
+                                            echo "Mailer Error: " . $mail->ErrorInfo;
+                                        } else {
+                                            echo "Message sent!";
+                                        }
                                         ?>
                                     </button>
                                 </form>
                                 <?php
-                            }
-                            if (isset($_POST['winConfirm'])) {
-                                $id = $_POST['auction_id'];
-                                $updatesql = "UPDATE Bids
-                                SET bid_confirmed=1
-                                WHERE auction_id=:auctionID";
-                                //                                echo $updatesql;
-                                $stmt = $db->prepare($updatesql);
-                                $stmt->bindParam(':auctionID', $id);
-                                $stmt->execute();
                             }
                             ?>
                         </td>
