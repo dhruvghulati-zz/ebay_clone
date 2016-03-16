@@ -4,7 +4,6 @@ include_once 'dbConnection.php';
 session_start();
 
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,7 +70,7 @@ include 'nav.php';
                 $userid = $_SESSION['user_id'];
                 //If bidder
                 if ($_SESSION['role_id'] == 1) {
-                    $sql = "SELECT a.auction_id,a.reserve_price, a.viewings, i.label,i.item_picture,max(b.bid_price) as bid_price,u.first_name,b.user_id,a.end_time,a.current_bid FROM Bids b
+                    $sql = "SELECT a.auction_id,a.reserve_price, a.viewings, i.label,i.item_picture,max(b.bid_price) as bid_price,u.first_name,b.user_id, u.email, a.end_time,a.current_bid FROM Bids b
                             INNER JOIN Auction a ON a.auction_id = b.auction_id
                             INNER JOIN Users u ON u.user_id = a.user_id
                             INNER JOIN Item i ON a.item_id = i.item_id WHERE b.user_id = $userid
@@ -298,58 +297,64 @@ include 'nav.php';
                             <!--                            Confirm win logic-->
                             <?php
                             if ($_SESSION['role_id'] == 1 && $enddt < time() && $bidauction['bid_price'] >= $bidauction['current_bid']
-                                && $bidauction['current_bid'] > $bidauction['reserve_price']) {
-                            ?>
-                            <form action="" method="post">
-                                <input hidden name="auction_id" value="<?php echo $bidauction['auction_id']; ?>"/>
-                                <button type="submit" id="confirmwin" name="winConfirm"
-                                        class="btn btn-success showArchived">
-                                    <span class="glyphicon glyphicon-play"></span>
-                                    <?php
-                                    if (isset($_POST['winConfirm'])) {
-                                        include 'mailer.php';
-
-                                        $mail->addAddress($bidauction['email'], $bidauction['first_name']);
-
-                                        //Set the subject line
-                                        $mail->Subject = 'Your auction has been successfully completed!';
-
-                                        //Replace the plain text body with one created manually
-                                        $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.';
-
-                                        //send the message, check for errors
-                                        if (!$mail->send()) {
-                                            echo "Mailer Error: " . $mail->ErrorInfo;
+                                && $bidauction['current_bid'] > $bidauction['reserve_price']
+                            ) {
+                                ?>
+                                <form action="" method="post">
+                                    <input hidden name="auction_id" value="<?php echo $bidauction['auction_id']; ?>"/>
+                                    <button type="submit" id="confirmwin" name="winConfirm"
+                                            class="btn btn-success showArchived">
+                                        <span class="glyphicon glyphicon-play"></span>
+                                        <?php
+                                        if ($result['bid_confirmed'] == 1) {
+                                            echo 'Win Confirmed';
                                         } else {
-                                            echo "Message sent!";
+                                            echo 'Confirm Win';
                                         }
-
-                                        include 'mailer.php';
-
-                                        $mail -> addAddress($result['email'], $result['first_name']);
-
-                                        $mail -> Subject = 'You have succesfully won an auction';
-
-                                        $mail -> Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account';
-
-                                        if (!$mail->send()) {
-                                            echo "Mailer Error: " . $mail->ErrorInfo;
-                                        } else {
-                                            echo "Message sent!";
-                                        }
-
-                                        $id = $_POST['auction_id'];
-                                        $updatesql = "UPDATE Bids
-                                            SET bid_confirmed=1
-                                            WHERE auction_id=:auctionID";
-                                        //                                echo $updatesql;
-                                        $stmt = $db->prepare($updatesql);
-                                        $stmt->bindParam(':auctionID', $id);
-                                        $stmt->execute();
-                                    }
-                                    ?>
+                                        ?>
                                     </button>
                                 </form>
+                                <?php
+                                if (isset($_POST['winConfirm'])) {
+                                    include 'mailer.php';
+
+                                    $mail->addAddress($bidauction['email'], $bidauction['first_name']);
+
+                                    //Set the subject line
+                                    $mail->Subject = 'Your auction has been successfully completed!';
+
+                                    //Replace the plain text body with one created manually
+                                    $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.';
+
+                                    //send the message, check for errors
+                                    if (!$mail->send()) {
+                                        echo "Mailer Error: " . $mail->ErrorInfo;
+                                    } else {
+                                        echo "Seller message sent!";
+                                    }
+
+                                    $mail->addAddress($result['email'], $result['first_name']);
+
+                                    $mail->Subject = 'You have succesfully won an auction';
+
+                                    $mail->Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account';
+
+                                    if (!$mail->send()) {
+                                        echo "Mailer Error: " . $mail->ErrorInfo;
+                                    } else {
+                                        echo "Bidder message sent!";
+                                    }
+
+                                    $id = $_POST['auction_id'];
+                                    $updatesql = "UPDATE Bids
+                                            SET bid_confirmed=1
+                                            WHERE auction_id=:auctionID";
+                                    //                                echo $updatesql;
+                                    $stmt = $db->prepare($updatesql);
+                                    $stmt->bindParam(':auctionID', $id);
+                                    $stmt->execute();
+                                }
+                                ?>
                                 <?php
                             }
                             ?>
