@@ -27,6 +27,15 @@ session_start();
     <script src="js/bootstrap.min.js"></script>
 
     <script src="clockCode/countdown.js"></script>
+    <script>
+        $('#confirmwin').on('click', function () {
+            var $el = $(this),
+                textNode = this.lastChild;
+            $el.find('span').toggleClass('glyphicon-fire glyphicon-road');
+            textNode.nodeValue = ($el.hasClass('showArchived') ? 'Confirm Win' : 'Win Confirmed');
+            $el.toggleClass('showArchived');
+        });
+    </script>
 
 </head>
 
@@ -107,14 +116,13 @@ include 'nav.php';
                                             echo htmlspecialchars($bidauction['label']);
                                             ?></a></h4>
                                     <?php
-                                    if($_SESSION['role_id'] == 1)
-                                    {
-                                    ?>
+                                    if ($_SESSION['role_id'] == 1) {
+                                        ?>
                                         <h5 class="media-heading"> Sold By: <a
                                                 href="profile.php?user=<?php echo $bidauction['user_id']; ?>"><?php
                                                 echo htmlspecialchars($bidauction['username'])
                                                 ?></a></h5>
-                                     <?php
+                                        <?php
                                     }
                                     ?>
                                     <?php
@@ -325,50 +333,51 @@ include 'nav.php';
                                         ?>
                                     </button>
                                 </form>
+                            <?php
+                            if (isset($_POST['winConfirm'])) {
+                            include 'mailer.php';
+
+                            $mail->addAddress($bidauction['email'], $bidauction['first_name']);
+
+                            //Set the subject line
+                            $mail->Subject = 'Your auction has been successfully completed!';
+
+                            //Replace the plain text body with one created manually
+                            $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.';
+
+                            //send the message, check for errors
+                            if (!$mail->send()) {
+                                echo "Mailer Error: " . $mail->ErrorInfo;
+                            } else {
+                                echo "Seller message sent!";
+                            }
+                            ?>
+                                <script>
+                                    alert('Win confirmed!');
+                                </script>
                                 <?php
-                                if (isset($_POST['winConfirm'])) {
-                                    include 'mailer.php';
 
-                                    $mail->addAddress($bidauction['email'], $bidauction['first_name']);
+                                $mail->addAddress($result['email'], $result['first_name']);
 
-                                    //Set the subject line
-                                    $mail->Subject = 'Your auction has been successfully completed!';
+                                $mail->Subject = 'You have succesfully won an auction';
 
-                                    //Replace the plain text body with one created manually
-                                    $mail->Body = $result['username'] . ' has won your auction for ' . $bidauction['current_bid'] . '. The corresponding amount of money will be paid into your account.';
+                                $mail->Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account';
 
-                                    //send the message, check for errors
-                                    if (!$mail->send()) {
-                                        echo "Mailer Error: " . $mail->ErrorInfo;
-                                    } else {
-                                        echo "Seller message sent!";
-                                    }
-                                    ?>
-                                    <script>
-                                        alert('Win confirmed!');
-                                    </script>
-                                    <?php
+                                if (!$mail->send()) {
+                                    echo "Mailer Error: " . $mail->ErrorInfo;
+                                } else {
+                                    echo "Bidder message sent!";
+                                }
 
-                                    $mail->addAddress($result['email'], $result['first_name']);
-
-                                    $mail->Subject = 'You have succesfully won an auction';
-
-                                    $mail->Body = 'You have won the ' . $bidauction['label'] . ' auction! The corresponding amount of money will be deducted from your account';
-
-                                    if (!$mail->send()) {
-                                        echo "Mailer Error: " . $mail->ErrorInfo;
-                                    } else {
-                                        echo "Bidder message sent!";
-                                    }
-
-                                    $id = $_POST['auction_id'];
-                                    $updatesql = "UPDATE Auction
+                                $id = $_POST['auction_id'];
+                                $updatesql = "UPDATE Auction
                                             SET win_confirmed=1
                                             WHERE auction_id=:auctionID";
-                                    //                                echo $updatesql;
-                                    $stmt = $db->prepare($updatesql);
-                                    $stmt->bindParam(':auctionID', $id);
-                                    $stmt->execute();
+                                //                                echo $updatesql;
+                                $stmt = $db->prepare($updatesql);
+                                $stmt->bindParam(':auctionID', $id);
+                                $stmt->execute();
+//                                header('location: bidsauctions.php');
                                 }
                                 ?>
                                 <?php
@@ -397,6 +406,8 @@ include 'nav.php';
         textNode.nodeValue = ($el.hasClass('stopAuction') ? 'Stop Auction' : 'Auction Stopped');
         $el.toggleClass('stopAuction');
     });
+
+
 
 </script>
 </body>
