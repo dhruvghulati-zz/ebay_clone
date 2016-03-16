@@ -343,6 +343,11 @@ include 'nav.php';
                                     } else {
                                         echo "Seller message sent!";
                                     }
+                                    ?>
+                                    <script>
+                                        alert('Win confirmed!');
+                                    </script>
+                                    <?php
 
                                     $mail->addAddress($result['email'], $result['first_name']);
 
