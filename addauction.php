@@ -17,11 +17,9 @@ if (isset($_POST['submit'])) {
     $tmp_name = $_FILES['item-image']['tmp_name'];
     $saveddate = date('mdy-Hms');
     $newfilename = 'uploads/item/' . $saveddate . '_' . $image_name;
-    if (isset($image_name)) {
-        if (!empty($image_name)) {
+    
             move_uploaded_file($tmp_name, $newfilename);
-        }
-    }
+
     $startdate = new DateTime();
     $enddate = $startdate;
     $formatstart = $startdate->format('Y-m-d H:i:s');
