@@ -75,54 +75,11 @@ if (isset($_POST['submit'])) {
             }
 
         }
-
+        $message = '';
     } else if($newBid <= $currentBid) {
         $message="New bid needs to be higher than the current bid";
     }
 }
-else {
-    header('Location: redirection.php');
-}
-?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Shop Homepage - Start Bootstrap Template</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="css/productpage.css" rel="stylesheet">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-
-    <![endif]-->
-    <script src="js/jquery.js"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-    <!--    Clock code-->
-    <script src="clockCode/countdown.js"></script>
-</head>
-
-<body>
-<?php
-include('nav.php');
-$message = '';
 if (isset($_GET["auct"])) {
     //Need auction validation
     require("dbConnection.php");
@@ -165,18 +122,51 @@ if (isset($_GET["auct"])) {
         $stat->bindParam(":auction", $data['auction_id']);
         $stat->execute();
 
-
-        //Test data to see if it works
-        //echo $data["item_id"];
-        //echo $data["user_id"];
-        //echo $item_data["name"];
-        //echo $item_data["category_id"];
-        //echo $seller_data["email"];
-        //Complete
     }
 } else {
     header("Location: redirection.php");
 }
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Shop Homepage - Start Bootstrap Template</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/productpage.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+    <script src="js/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    <!--    Clock code-->
+    <script src="clockCode/countdown.js"></script>
+</head>
+
+<body>
+<?php
+include('nav.php');
+
+
 ?>
 <div class="container-fluid" style="padding-top:50px">
     <div class="content-wrapper" style="padding-top:50px">
@@ -221,7 +211,7 @@ if (isset($_GET["auct"])) {
                     <hr>
                     <div class="row">
                         <div class="col-sm-6">
-                            <form id="addBid" action="productpage.php" method="post" role="form">
+                            <form id="addBid" action="productpage.php?auct=<?php echo $data['auction_id']; ?>" method="post" role="form">
                                 <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
                                 <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
                                 <input hidden name="auction_id" value="<?php echo $data['auction_id']; ?>"/>

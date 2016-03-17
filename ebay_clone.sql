@@ -31,9 +31,9 @@ CREATE TABLE Auction (
     duration_id int  NOT NULL,
     end_time datetime  NOT NULL,
     viewings int  NOT NULL  DEFAULT 0,
+    win_confirmed BOOLEAN NOT NULL,
     item_id int  NOT NULL,
     user_id int  NOT NULL,
-    win_confirmed BOOLEAN NOT NULL,
     CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
 );
 

@@ -2,6 +2,7 @@
 include 'nav.php';
 //If search has been submitted
 if (isset($_GET['sort'])) {
+    $name = $_GET['search-name'];
     $category = $_GET['search-category'];
     $state = $_GET['search-state'];
     $sort = $_GET['sort'];
@@ -155,7 +156,7 @@ if (isset($_GET['sort'])) {
     }
     $stmt->execute();
     $result = $stmt->fetchAll();
-    $currentLink = 'listings.php?search-name=' . $name . '&search-category=' . $category . '&search-state' . $state;
+    $currentLink = 'listings.php?search-name=' . $name . '&search-category=' . $category . '&search-state=' . $state;
 }
 //If search has not been submitted
 else {
@@ -206,8 +207,7 @@ else {
                 <div class="caption">
                     <h4 class="pull-right">$ <?php echo $item['current_bid']; ?></h4>
                     <h4><a href="productpage.php?auct=<?php echo $item['auction_id']; ?>"><?php echo $item['label']; ?> (<?php echo $item['state']; ?>)</a></h4>
-                    <p>Description: <?php echo $item['description']; ?></p>
-                    <p>State: <?php echo $item['state']; ?></p>
+                    <p><?php echo $item['description']; ?></p>
                 </div>
                 <div class="row viewings">
                     <div class="col-md-6">Viewings: <?php echo $item['viewings']; ?></div>

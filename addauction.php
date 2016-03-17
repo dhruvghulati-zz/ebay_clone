@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     if ($reservePrice > $startPrice) {
         $itemSQL = 'INSERT INTO Item VALUES (NULL, :item_picture, :label, :description, :state_id, :category_id)';
         $auctionSQL = 'INSERT INTO Auction VALUES (NULL, :start_price, :reserve_price, :start_price, :start_time, :duration_id, :end_time,
-              DEFAULT, LAST_INSERT_ID(), :user_id)';
+              DEFAULT, FALSE, LAST_INSERT_ID(), :user_id)';
         $itemSTMT = $db->prepare($itemSQL);
         $itemSTMT->bindParam(':item_picture', $newfilename);
         $itemSTMT->bindParam(':label', $name);
@@ -52,15 +52,15 @@ if (isset($_POST['submit'])) {
         $itemSTMT->execute();
         if (!$itemSTMT->rowCount()) {
             $db->rollBack();
-            echo 'item stmt failed';
+            //echo 'item stmt failed';
         } else {
             $auctionSTMT->execute();
             if (!$auctionSTMT->rowCount()) {
                 $db->rollBack();
-                echo 'auction stmt failed';
+                //echo 'auction stmt failed';
             } else {
                 $db->commit();
-                echo 'success db';
+                //echo 'success db';
                 header('Location: listings.php');
             }
         }
