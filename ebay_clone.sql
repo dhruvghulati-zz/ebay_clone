@@ -79,6 +79,14 @@ CREATE TABLE Roles (
     CONSTRAINT Roles_pk PRIMARY KEY (role_id)
 );
 
+-- Table Rating
+CREATE TABLE Rating (
+    sender_id int  NOT NULL,
+    receiver_id int NOT NULL,
+    value int NOT NULL,
+    CONSTRAINT Rating_pk PRIMARY KEY (sender_id,receiver_id)
+);
+
 -- Table State
 CREATE TABLE State (
     state_id int  NOT NULL  AUTO_INCREMENT,
@@ -153,6 +161,9 @@ ALTER TABLE Watch ADD CONSTRAINT Users_Watch FOREIGN KEY Users_Watch (user_id)
 ALTER TABLE Watch ADD CONSTRAINT Watch_Auction FOREIGN KEY Watch_Auction (auction_id)
     REFERENCES Auction (auction_id);
 
+-- Reference:  Rating_Users (table: Rating)
+ALTER TABLE Watch ADD CONSTRAINT Rating_Users FOREIGN KEY Rating_Users (sender_id)
+    REFERENCES Users (user_id);
 
 -- Insert Data
 
