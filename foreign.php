@@ -112,7 +112,7 @@ if (!empty($data)) {
     ?>
 
     <?php
-        $ans = $db->prepare('SELECT value FROm Rating WHERE sender_id = :sender AND receiver_id =:receiver');
+        $ans = $db->prepare('SELECT rating_value FROM Rating WHERE sender_id = :sender AND receiver_id =:receiver');
 
         $ans->bindParam(':sender',$userSEI);
         $ans->bindParam(':receiver',$_GET["user"]);

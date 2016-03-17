@@ -1,7 +1,7 @@
 <?php
 
 include_once 'dbConnection.php';
-session_start();
+//session_start();
 if (isset($_POST['winConfirm'])) {
     include 'mailer.php';
 

@@ -7,11 +7,11 @@
 	//Push the ratings to the ratings table
 	require("dbConnection.php");
 	$self = $_SESSION['user_id'];
-	$ins = $db->prepare('INSERT INTO Rating VALUES (:sender,:receiver,:value)');
+	$ins = $db->prepare('INSERT INTO Rating VALUES (:sender,:receiver,:rating_value)');
 
 	$ins->bindParam(':sender',$self);
 	$ins->bindParam(':receiver',$_POST["user"]);
-    $ins->bindParam(':value',$_POST["rating"]);
+    $ins->bindParam(':rating_value',$_POST["rating"]);
 
     $ins->execute();
 

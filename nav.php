@@ -8,8 +8,6 @@ session_start();
 
 <head>
 
-    <title>Listings</title>
-
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/shop-homepage.css" rel="stylesheet">

@@ -31,7 +31,7 @@ CREATE TABLE Auction (
     duration_id int  NOT NULL,
     end_time datetime  NOT NULL,
     viewings int  NOT NULL  DEFAULT 0,
-    win_confirmed BOOLEAN NOT NULL,
+    win_confirmed bool  NOT NULL,
     item_id int  NOT NULL,
     user_id int  NOT NULL,
     CONSTRAINT Auction_pk PRIMARY KEY (auction_id)
@@ -72,19 +72,19 @@ CREATE TABLE Item (
     CONSTRAINT Item_pk PRIMARY KEY (item_id)
 );
 
+-- Table Ratings
+CREATE TABLE Rating (
+    sender_id int  NOT NULL,
+    receiver_id int  NOT NULL,
+    rating_value int  NOT NULL,
+    CONSTRAINT Ratings_pk PRIMARY KEY (sender_id,receiver_id)
+);
+
 -- Table Roles
 CREATE TABLE Roles (
     role_id int  NOT NULL  AUTO_INCREMENT,
     role varchar(15)  NOT NULL,
     CONSTRAINT Roles_pk PRIMARY KEY (role_id)
-);
-
--- Table Rating
-CREATE TABLE Rating (
-    sender_id int  NOT NULL,
-    receiver_id int NOT NULL,
-    value int NOT NULL,
-    CONSTRAINT Rating_pk PRIMARY KEY (sender_id,receiver_id)
 );
 
 -- Table State
@@ -107,8 +107,7 @@ CREATE TABLE Users (
     rating_count int  NOT NULL,
     rating decimal(3,2)  NOT NULL  DEFAULT 0,
     role_id int  NOT NULL  DEFAULT 0,
-    CONSTRAINT Users_pk PRIMARY KEY (user_id),
-    UNIQUE KEY(username, email)
+    CONSTRAINT Users_pk PRIMARY KEY (user_id)
 );
 
 -- Table Watch
@@ -124,11 +123,11 @@ CREATE TABLE Watch (
 -- Reference:  Auction_Bids (table: Bids)
 ALTER TABLE Bids ADD CONSTRAINT Auction_Bids FOREIGN KEY Auction_Bids (auction_id)
     REFERENCES Auction (auction_id);
-    
+
 -- Reference:  Auction_Duration (table: Auction)
 ALTER TABLE Auction ADD CONSTRAINT Auction_Duration FOREIGN KEY Auction_Duration (duration_id)
     REFERENCES Duration (duration_id);
-    
+
 -- Reference:  Auction_Item (table: Auction)
 ALTER TABLE Auction ADD CONSTRAINT Auction_Item FOREIGN KEY Auction_Item (item_id)
     REFERENCES Item (item_id);
@@ -140,30 +139,30 @@ ALTER TABLE Auction ADD CONSTRAINT Auction_Users FOREIGN KEY Auction_Users (user
 -- Reference:  Category_Item (table: Item)
 ALTER TABLE Item ADD CONSTRAINT Category_Item FOREIGN KEY Category_Item (category_id)
     REFERENCES Category (category_id);
-    
+
 -- Reference:  Item_condition_id (table: Item)
 ALTER TABLE Item ADD CONSTRAINT Item_condition_id FOREIGN KEY Item_condition_id (state_id)
     REFERENCES State (state_id);
-    
+
+-- Reference:  Ratings_Users (table: Ratings)
+ALTER TABLE Rating ADD CONSTRAINT Rating_Users FOREIGN KEY Rating_Users (sender_id)
+    REFERENCES Users (user_id);
+
 -- Reference:  Users_Bids (table: Bids)
 ALTER TABLE Bids ADD CONSTRAINT Users_Bids FOREIGN KEY Users_Bids (user_id)
     REFERENCES Users (user_id);
-    
+
 -- Reference:  Users_Roles (table: Users)
 ALTER TABLE Users ADD CONSTRAINT Users_Roles FOREIGN KEY Users_Roles (role_id)
     REFERENCES Roles (role_id);
-    
+
 -- Reference:  Users_Watch (table: Watch)
 ALTER TABLE Watch ADD CONSTRAINT Users_Watch FOREIGN KEY Users_Watch (user_id)
     REFERENCES Users (user_id);
-    
+
 -- Reference:  Watch_Auction (table: Watch)
 ALTER TABLE Watch ADD CONSTRAINT Watch_Auction FOREIGN KEY Watch_Auction (auction_id)
     REFERENCES Auction (auction_id);
-
--- Reference:  Rating_Users (table: Rating)
-ALTER TABLE Watch ADD CONSTRAINT Rating_Users FOREIGN KEY Rating_Users (sender_id)
-    REFERENCES Users (user_id);
 
 -- Insert Data
 

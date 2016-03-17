@@ -83,7 +83,6 @@ if (isset($_POST['submit'])) {
 if (isset($_GET["auct"])) {
     //Need auction validation
     require("dbConnection.php");
-    session_start();
     $resp = $db->prepare('SELECT * FROM Auction WHERE auction_id = :auction_id');
     $resp->bindParam(':auction_id', $_GET["auct"]);
     $resp->execute();
@@ -165,13 +164,12 @@ if (isset($_GET["auct"])) {
 <body>
 <?php
 include('nav.php');
-
-
 ?>
-<div class="container-fluid" style="padding-top:50px">
+
+<div class="container-fluid2" style="padding-top:50px">
     <div class="content-wrapper" style="padding-top:50px">
         <div class="item-container">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="product col-md-3 service-image-left">
                     <img id="item-display"
                          src="<?php echo $item_data['item_picture']; ?>"
@@ -202,16 +200,16 @@ include('nav.php');
                     <div class="product-price">Current Bid
                         <br>$ <?php echo $data['current_bid']; ?>
                     </div>
-                    <h5 class="product-stock" id="timeRem"></h5>
+                    <p class="product-stock" id="timeRem"></p>
 
                     <!--                    Only buyers can add bids-->
                     <?php
                     if ($_SESSION['role_id'] == 1)
                     {
                     ?>
-                    <hr>
+
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-6" style="padding-left:20px;">
                             <form id="addBid" action="productpage.php?auct=<?php echo $data['auction_id']; ?>" method="post" role="form">
                                 <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
                                 <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
@@ -281,7 +279,7 @@ include('nav.php');
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid2">
         <div class="col-md-12 product-info">
             <ul id="myTab" class="nav nav-tabs nav_tabs">
 
@@ -345,7 +343,9 @@ include('nav.php');
                             echo "<p>You're the first to bid!</p>";
                         } else {
                             while ($res_bid = $bid_history->fetch()) {
-                                echo "<p><a href='profile.php?user='".$res_bid["user_id"].">" . $res_bid["username"] . " " . $res_bid["bid_price"] . "</a></p>";
+                                ?>
+                            <p><a href='profile.php?user=<?php echo $res_bid["user_id"]; ?>'><?php echo $res_bid["username"] . " " . $res_bid["bid_price"];?> </a> </p>
+                            <?php
                             }
                             $bid_history->closeCursor();
                         }

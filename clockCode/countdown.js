@@ -15,6 +15,11 @@ function getTimeRemaining(endtime){
 
 function setClock(endtime,destination,id){
 	var clock = document.getElementById(id);
+	var timeLeft = getTimeRemaining(endtime);
+	clock.innerHTML = 'Time Remaining: days: ' + timeLeft.days +
+		' hours: '+ timeLeft.hours +
+		' minutes: ' + timeLeft.minutes +
+		' seconds: ' + timeLeft.seconds;
 	var inter = setInterval(function(){
         var timeLeft = getTimeRemaining(endtime);
         clock.innerHTML = 'Time Remaining: days: ' + timeLeft.days +

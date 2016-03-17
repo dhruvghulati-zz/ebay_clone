@@ -29,8 +29,8 @@
     <script src="js/bootstrap.min.js"></script>
     <link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css"
           rel="stylesheet" type="text/css"/>
-    <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+    <script class="jsbin" src="js/jquery.js"></script>
+    <script class="jsbin" src="js/jquery.js"></script>
     <meta charset=utf-8/>
     <script src="js/rating.js"></script>
 </head>
@@ -39,7 +39,7 @@
 <?php include('nav.php');
 require("dbConnection.php");
 $ctrl = true;
-session_start();
+//session_start();
 $userSEI = $_SESSION['user_id']; 
 if (isset($_GET["user"])) {
     $ctrl = false;

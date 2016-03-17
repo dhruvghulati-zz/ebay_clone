@@ -1,11 +1,11 @@
 <?php
 require_once 'dbConnection.php';
-session_start();
 ?>
 
 <?php
 $errPrice = '';
 if (isset($_POST['submit'])) {
+    session_start();
     $name = $_POST['item-name'];
     $category = $_POST['item-category'];
     $description = $_POST['item-description'];
