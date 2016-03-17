@@ -272,13 +272,17 @@ include 'nav.php';
                                     }
                                     if ($_SESSION['role_id'] == 2) {
                                         echo '<span>Status: </span><span class="text-success"><strong>';
-                                        if ($result['win_confirmed'] == 1 && $enddt < time()) {
+                                        if ($enddt > time()) {
+                                            echo 'Ongoing Auction';
+                                        }
+
+                                        if ($result['win_confirmed'] == 1) {
                                             echo 'Win Confirmed';
                                         }
-                                        if ($enddt < time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
+                                        if ($enddt <= time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
                                             echo 'Item Won but Unconfirmed';
                                         }
-                                        if ($enddt < time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
+                                        if ($enddt > time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
                                             echo 'Didn\'t meet reserve';
                                         }
                                     }
