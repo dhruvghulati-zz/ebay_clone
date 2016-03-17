@@ -214,7 +214,7 @@ include('nav.php');
                                 <input hidden name="user_id" value="<?php echo $_SESSION['user_id'] ?>"/>
                                 <input hidden name="current_bid" value="<?php echo $data['current_bid']; ?>"/>
                                 <input hidden name="auction_id" value="<?php echo $data['auction_id']; ?>"/>
-                                <input hidden name="item_label" value="<?php echo $data['label']; ?>"/>
+                                <input hidden name="item_label" value="<?php echo $item_data['label']; ?>"/>
                                 <input type="number" id="bidInput" min="0" name="new_bid"/>
                                 <button id="submit" name="submit" class="btn btn-success">Submit Bid</button>
                                 <!--                            http://stackoverflow.com/questions/12230981/how-do-i-navigate-to-another-page-on-button-click-with-twitter-bootstrap-->

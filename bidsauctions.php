@@ -48,6 +48,22 @@ if (isset($_POST['winConfirm'])) {
     header('location: bidsauctions.php');
 }
 
+if (isset($_POST['stopAuction']) and is_numeric($_POST['stopAuction'])) {
+    $now = new DateTime();
+    $time = $now->format("Y-m-d H:i:s");
+    $id = $_POST['stopAuction'];
+//                                echo $time;
+    $updatesql = "UPDATE Auction
+                                SET end_time=:nowtime
+                                WHERE auction_id=:auctionID";
+//                                echo $updatesql;
+    $stmt = $db->prepare($updatesql);
+    $stmt->bindParam(':nowtime', $time);
+    $stmt->bindParam(':auctionID', $id);
+    $stmt->execute();
+    header('location: bidsauctions.php');
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -123,7 +139,7 @@ include 'nav.php';
                 $userid = $_SESSION['user_id'];
                 //If bidder
                 if ($_SESSION['role_id'] == 1) {
-                    $sql = "SELECT a.auction_id,a.reserve_price, a.viewings, i.label,i.item_picture,max(b.bid_price) as bid_price,u.first_name, u.username, b.user_id, u.email, a.end_time,a.current_bid FROM Bids b
+                    $sql = "SELECT a.auction_id,a.reserve_price, a.viewings, i.label,i.item_picture,max(b.bid_price) as bid_price,u.first_name, u.username, b.user_id, a.user_id AS sellerID, u.email, a.end_time, a.current_bid FROM Bids b
                             INNER JOIN Auction a ON a.auction_id = b.auction_id
                             INNER JOIN Users u ON u.user_id = a.user_id
                             INNER JOIN Item i ON a.item_id = i.item_id WHERE b.user_id = $userid
@@ -163,7 +179,7 @@ include 'nav.php';
                                     if ($_SESSION['role_id'] == 1) {
                                         ?>
                                         <h5 class="media-heading"> Sold By: <a
-                                                href="profile.php?user=<?php echo $bidauction['user_id']; ?>"><?php
+                                                href="profile.php?user=<?php echo $bidauction['sellerID']; ?>"><?php
                                                 echo htmlspecialchars($bidauction['username'])
                                                 ?></a></h5>
                                         <?php
@@ -247,7 +263,7 @@ include 'nav.php';
                                         if ($bidauction['bid_price'] >= $bidauction['current_bid'] && $enddt < time() && $result['win_confirmed'] == 1) {
                                             echo 'Win Confirmed';
                                         }
-                                        if ($enddt < time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
+                                        if ($enddt < time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price'] && $bidauction['bid_price'] >= $bidauction['current_bid'] ) {
                                             echo 'Item Won but Unconfirmed';
                                         }
                                         if ($enddt < time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
@@ -330,7 +346,7 @@ include 'nav.php';
                             }
                             if ($_SESSION['role_id'] == 2 && $enddt > time()) {
                                 ?>
-                                <form action="" method="POST">
+                                <form action="bidsauctions.php" method="POST">
                                     <button type="submit" id="stopauction" name="stopAuction"
                                             value="<?php echo $bidauction['auction_id'] ?>"
                                             class="btn btn-danger stopAuction">
@@ -342,20 +358,7 @@ include 'nav.php';
                             ?>
                             <?php
                             //                            Stop auction logic
-                            if (isset($_POST['stopAuction']) and is_numeric($_POST['stopAuction'])) {
-                                $now = new DateTime();
-                                $time = $now->format("Y-m-d H:i:s");
-                                $id = $_POST['stopAuction'];
-//                                echo $time;
-                                $updatesql = "UPDATE Auction
-                                SET end_time=:nowtime
-                                WHERE auction_id=:auctionID";
-//                                echo $updatesql;
-                                $stmt = $db->prepare($updatesql);
-                                $stmt->bindParam(':nowtime', $time);
-                                $stmt->bindParam(':auctionID', $id);
-                                $stmt->execute();
-                            }
+
                             ?>
                             <!--                            Confirm win logic-->
                             <?php
