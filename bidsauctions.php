@@ -352,9 +352,18 @@ include 'nav.php';
                                 ?>
                                 <form action="bidsauctions.php" method="POST">
                                     <button type="submit" id="stopauction" name="stopAuction"
-                                            value="<?php echo $bidauction['auction_id'] ?>"
+                                            value="<?php echo $bidauction['auction_id']; ?>"
                                             class="btn btn-danger stopAuction">
                                         Stop Auction
+                                    </button>
+                                </form>
+                                <?php
+                            }
+                            if ($_SESSION['role_id'] == 2 && $enddt <= time()) {
+                                ?>
+                                <form>
+                                    <button type="submit" class="btn btn-success">
+                                        Auction Finished
                                     </button>
                                 </form>
                                 <?php
