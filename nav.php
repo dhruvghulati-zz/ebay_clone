@@ -3,6 +3,23 @@ require_once 'dbConnection.php';
 session_start();
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Listings</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/shop-homepage.css" rel="stylesheet">
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</head>
+
 <!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -50,7 +67,7 @@ session_start();
                 <!-- Search Name -->
                 <div class="form-group">
                     <label class="sr-only" for="item-name">Product Name</label>
-                    <input id="item-name" name="search-name" placeholder="Product Name" class="form-control">
+                    <input id="item-name" name="search-name" placeholder="Product Name or Description" class="form-control">
                 </div>
                 <!-- Search Category -->
                 <div class="form-group">

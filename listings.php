@@ -169,22 +169,6 @@ else {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <title>Listings</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/shop-homepage.css" rel="stylesheet">
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-
-</head>
 
 <body>
 
