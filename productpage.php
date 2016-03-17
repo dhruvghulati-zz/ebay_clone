@@ -179,6 +179,7 @@ include('nav.php');
                 </div>
                 <div class="product col-md-9">
                     <div class="product-title"><?php echo $item_data["label"]; ?></div>
+                    <div class="product-category"><a href="profile.php?user=<?php echo $seller_data['user_id']; ?>"><?php echo $seller_data["username"]; ?></a></div>
                     <div class="product-category"><?php echo $category_data["category"]; ?></div>
                     <div class="product-rating">
                         <?php
@@ -336,7 +337,7 @@ include('nav.php');
                 <div class="tab-pane fade" id="service-three">
                     <section class="container">
                         <?php
-                        $bid_history = $db->prepare('SELECT Users.username, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price LIMIT 10');
+                        $bid_history = $db->prepare('SELECT Users.username, Users.user_id, Bids.bid_price FROM Users,Bids WHERE auction_id = :auct AND Bids.user_id = Users.user_id ORDER BY Bids.bid_price DESC LIMIT 10');
                         $bid_history->bindParam(':auct', $data["auction_id"]);
                         $bid_history->execute();
 
@@ -344,7 +345,7 @@ include('nav.php');
                             echo "<p>You're the first to bid!</p>";
                         } else {
                             while ($res_bid = $bid_history->fetch()) {
-                                echo "<p>" . $res_bid["username"] . " " . $res_bid["bid_price"] . "</p>";
+                                echo "<p><a href='profile.php?user='".$res_bid["user_id"].">" . $res_bid["username"] . " " . $res_bid["bid_price"] . "</a></p>";
                             }
                             $bid_history->closeCursor();
                         }
