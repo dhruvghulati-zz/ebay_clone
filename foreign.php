@@ -145,7 +145,7 @@ if (!empty($data)) {
                  </script>';
         }else{
            $resa = $ans->fetch();
-           $delt = $resa["value"];
+           $delt = $resa["rating_value"];
            $ans->closeCursor();
            echo '<div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
@@ -182,7 +182,7 @@ if (!empty($data)) {
                     <div class="row">
                     <form name="ratingForm" id="rat" action="rating.php" method="post">
                         <div id="stars-default"><input type=hidden name="rating"/></div>
-                        <input type=hidden name="user" value=<?php echo $_GET["user"]  ?> />
+                        <input type=hidden name="user" value=> />
                         <input type="submit" name="submit" id="submitBtn" value="Submit"/>
                     </form>
                     </div>

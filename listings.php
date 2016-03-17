@@ -168,7 +168,20 @@ else {
     $currentLink = 'listings.php?search-name=&search-category=0&search-state=0';
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/shop-homepage.css" rel="stylesheet">
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+</head>
 
 <body>
 

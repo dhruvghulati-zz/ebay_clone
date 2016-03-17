@@ -16,7 +16,7 @@
 
     <!-- Custom CSS -->
     <link href="css/profile.css" rel="stylesheet">
-     <link href="css/rating.css" rel="stylesheet">
+    <link href="css/rating.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,20 +26,20 @@
     <![endif]-->
 <!--    <script src="js/jquery.js"></script>-->
     <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+
     <link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css"
           rel="stylesheet" type="text/css"/>
     <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
-    <meta charset=utf-8/>
+    <script src="js/bootstrap.min.js"></script>
     <script src="js/rating.js"></script>
+    <meta charset=utf-8/>
 </head>
 
 <body>
 <?php include('nav.php');
 require("dbConnection.php");
 $ctrl = true;
-session_start();
 $userSEI = $_SESSION['user_id']; 
 if (isset($_GET["user"])) {
     $ctrl = false;
