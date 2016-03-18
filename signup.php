@@ -34,7 +34,7 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
 				//$date = $dateofbirth->format('Y-m-d');
 				//$timestamp = $date->getTimestamp();
 
-				$ins->bindParam(':username',htmlspecialchars($_POST["username"]);
+				$ins->bindParam(':username',htmlspecialchars($_POST["username"]));
                 $ins->bindParam(':email',htmlspecialchars($_POST["email"]));
 
 				$ins->bindParam(':profile_picture',htmlspecialchars("uploads/profile/stock.jpg"));
