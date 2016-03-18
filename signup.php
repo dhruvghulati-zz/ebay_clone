@@ -34,14 +34,14 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
 				//$date = $dateofbirth->format('Y-m-d');
 				//$timestamp = $date->getTimestamp();
 
-				$ins->bindParam(':username',$_POST["username"]);
-                $ins->bindParam(':email',$_POST["email"]);
+				$ins->bindParam(':username',htmlspecialchars($_POST["username"]);
+                $ins->bindParam(':email',htmlspecialchars($_POST["email"]));
 
 				$ins->bindParam(':profile_picture',htmlspecialchars("uploads/profile/stock.jpg"));
 				$ins->bindParam(':password',$hashedPass);
-				$ins->bindParam(':first_name',$_POST["firstname"]);
-				$ins->bindParam(':last_name',$_POST["lastname"]);
-				$ins->bindParam(':dob',$_POST["dob"]);
+				$ins->bindParam(':first_name',htmlspecialchars($_POST["firstname"]));
+				$ins->bindParam(':last_name',htmlspecialchars($_POST["lastname"]));
+				$ins->bindParam(':dob',htmlspecialchars($_POST["dob"]);
                 $ins->bindParam(':role_id',$_POST["role"]);
 
 				$ins->execute();
