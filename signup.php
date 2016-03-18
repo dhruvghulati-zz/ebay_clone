@@ -41,7 +41,7 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
 				$ins->bindParam(':password',$hashedPass);
 				$ins->bindParam(':first_name',htmlspecialchars($_POST["firstname"]));
 				$ins->bindParam(':last_name',htmlspecialchars($_POST["lastname"]));
-				$ins->bindParam(':dob',htmlspecialchars($_POST["dob"]);
+				$ins->bindParam(':dob',htmlspecialchars($_POST["dob"]));
                 $ins->bindParam(':role_id',$_POST["role"]);
 
 				$ins->execute();
@@ -57,5 +57,3 @@ if(isset($_POST["username"],$_POST["password"],$_POST["confirm-password"],$_POST
 }else{
 	header('Location: index.php?val=2');
 }
-
-?>
