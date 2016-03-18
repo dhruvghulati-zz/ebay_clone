@@ -64,7 +64,7 @@ if (isset($_POST['submit'])) {
                 $mail->Subject = 'You have been outbid on an auction!';
 
                 //Replace the plain text body with one created manually
-                $mail->Body = 'You just got outbid on the ' . $label . ' auction you were watching! The new bid is: ' . $currentBid;
+                $mail->Body = 'You just got outbid on the ' . $label . ' auction you were watching! The new bid is: ' . $newBid;
 
                 //send the message, check for errors
                 if (!$mail->send()) {
