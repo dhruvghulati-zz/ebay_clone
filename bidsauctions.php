@@ -282,7 +282,7 @@ include 'nav.php';
                                         if ($enddt <= time() && $result['win_confirmed'] == 0 && $bidauction['current_bid'] > $bidauction['reserve_price']) {
                                             echo 'Item Won but Unconfirmed';
                                         }
-                                        if ($enddt > time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
+                                        if ($enddt <= time() && ($bidauction['current_bid'] < $bidauction['reserve_price'])) {
                                             echo 'Didn\'t meet reserve';
                                         }
                                     }
