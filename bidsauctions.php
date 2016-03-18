@@ -362,7 +362,7 @@ include 'nav.php';
                             if ($_SESSION['role_id'] == 2 && $enddt <= time()) {
                                 ?>
                                 <form>
-                                    <button type="submit" class="btn btn-success">
+                                    <button type="submit" class="btn btn-success" onclick="alert('This auction has already finished!')">
                                         Auction Finished
                                     </button>
                                 </form>
